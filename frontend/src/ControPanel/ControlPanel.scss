@@ -1,0 +1,57 @@
+.control-panel-layout {
+  display: flex;
+}
+
+.control-panel-content {
+  flex: 1;
+  padding: 2rem;
+  background: #f8fafc;
+  min-height: 100vh;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #2d3a4b;
+  }
+
+  .panel-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 2rem;
+    justify-items: center;
+  }
+
+  .panel-card {
+    background: #fff;
+    border-radius: 1rem;
+    box-shadow: 0 2px 12px rgba(44, 62, 80, 0.08);
+    padding: 2rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    transition: box-shadow 0.2s, transform 0.2s;
+    border: 2px solid transparent;
+
+    &:hover, &:focus {
+      box-shadow: 0 4px 24px rgba(44, 62, 80, 0.15);
+      transform: translateY(-4px) scale(1.03);
+      border-color: #48dbfb;
+      outline: none;
+    }
+
+    .panel-icon {
+      margin-bottom: 1rem;
+      color: #48dbfb;
+      transition: color 0.2s;
+      font-size: 2.5rem;
+    }
+
+    .panel-label {
+      font-size: 1.1rem;
+      color: #2d3a4b;
+      font-weight: 600;
+      text-align: center;
+    }
+  }
+}

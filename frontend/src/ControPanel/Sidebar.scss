@@ -1,0 +1,50 @@
+.sidebar {
+  width: 300px; // aumentada em 10% (242px + 10%)
+  background: #2d3a4b;
+  color: #fff;
+  min-height: 100vh;
+  padding: 2rem 1rem 1rem 1rem;
+  box-shadow: 2px 0 12px rgba(44, 62, 80, 0.08);
+
+  h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    color: #48dbfb;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      padding: 0.8rem 1rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1.08rem;
+      transition: background 0.18s, color 0.18s, transform 0.15s;
+
+      svg {
+        font-size: 1.4rem;
+        color: #48dbfb;
+        transition: color 0.18s;
+      }
+
+      &:hover, &:focus {
+        background: #1877f2; // azul mais vibrante no hover
+        color: #fff;
+
+        svg {
+          color: #fff;
+        }
+
+        transform: translateX(6px) scale(1.04);
+      }
+    }
+  }
+}

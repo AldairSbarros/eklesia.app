@@ -1,0 +1,92 @@
+.dizimos-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  background: #fff;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+
+  h2 {
+    margin-bottom: 1.5rem;
+    color: #2d3a4b;
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .dizimos-form {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    justify-content: center;
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"] {
+      padding: 0.6rem 1rem;
+      border: 1px solid #e0eafc;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      background: #f8fafc;
+      min-width: 180px;
+    }
+
+    button {
+      padding: 0.6rem 1.5rem;
+      background: #48dbfb;
+      color: #fff;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      margin-left: 1rem;
+
+      &:hover {
+        background: #22a6b3;
+      }
+    }
+  }
+
+  .dizimos-msg {
+    text-align: center;
+    margin-bottom: 1rem;
+    color: #0984e3;
+    font-weight: 500;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+
+    th, td {
+      padding: 0.75rem 0.5rem;
+      border-bottom: 1px solid #eaeaea;
+      text-align: left;
+    }
+
+    th {
+      background: #f5f7fa;
+      color: #2d3a4b;
+      font-weight: 600;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    a {
+      color: #1976d2;
+      text-decoration: underline;
+      &:hover {
+        color: #125ea2;
+      }
+    }
+  }
+
+  p {
+    text-align: center;
+    color: #888;
+    margin-top: 1.5rem;
+  }

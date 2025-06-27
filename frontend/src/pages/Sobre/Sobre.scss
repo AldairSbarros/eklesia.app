@@ -1,0 +1,57 @@
+.sobre-page {
+  min-height: 100vh;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+
+  main {
+    flex: 1;
+    max-width: 700px;
+    margin: 2.5rem auto 2rem auto;
+    background: #fff;
+    border-radius: 1.2rem;
+    box-shadow: 0 2px 16px rgba(44, 62, 80, 0.10);
+    padding: 2.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1 {
+    color: #0984e3;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  p {
+    color: #2d3a4b;
+    font-size: 1.15rem;
+    margin-bottom: 1.2rem;
+    text-align: center;
+    line-height: 1.7;
+  }
+
+  a {
+    color: #00b894;
+    text-decoration: underline;
+    transition: color 0.18s;
+    &:hover {
+      color: #0984e3;
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .sobre-page main {
+    padding: 1.2rem 0.5rem;
+  }
+  .sobre-page h1 {
+    font-size: 1.4rem;
+  }
+    .sobre-page p {
+      font-size: 1rem;
+    }
+  }

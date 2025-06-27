@@ -1,0 +1,92 @@
+.congregacao-page {
+  max-width: 800px;
+  margin: 40px auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  padding: 32px;
+}
+
+.congregacao-page h2 {
+  text-align: center;
+  margin-bottom: 32px;
+  color: #2c3e50;
+}
+
+.congregacao-form {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.congregacao-form input {
+  padding: 10px 14px;
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  font-size: 1rem;
+  flex: 1 1 180px;
+}
+
+.congregacao-form button {
+  padding: 10px 22px;
+  background: #2d8cff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-left: 8px;
+}
+
+.congregacao-form button:hover {
+  background: #1a6ed8;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fafbfc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 12px 10px;
+  text-align: left;
+}
+
+th {
+  background: #f0f4f8;
+  color: #2c3e50;
+  font-weight: 600;
+}
+
+tr:nth-child(even) {
+  background: #f7fafd;
+}
+
+tr:hover {
+  background: #eaf3ff;
+}
+
+button {
+  margin-right: 8px;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 4px;
+  background: #2d8cff;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+button:last-child {
+  background: #e74c3c;
+}
+
+button:last-child:hover {
+  background: #c0392b;
+}

@@ -1,0 +1,21 @@
+.main-header {
+  width: 100%;
+  background: #2d3a4b;
+  padding: 1.2rem 0;
+  box-shadow: 0 2px 8px rgba(44, 62, 80, 0.08);
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .header-logo {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    letter-spacing: 1px;
+  }
+}
