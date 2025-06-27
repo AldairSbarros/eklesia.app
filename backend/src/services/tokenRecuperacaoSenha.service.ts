@@ -8,7 +8,7 @@ export const createToken = async (data: any) => {
 export const listTokens = async () => {
   return prisma.tokenRecuperacaoSenha.findMany({
     include: {
-      Usuario: true
+      usuario: true
     }
   });
 };
@@ -17,7 +17,7 @@ export const getToken = async (id: number) => {
   return prisma.tokenRecuperacaoSenha.findUnique({
     where: { id },
     include: {
-      Usuario: true
+      usuario: true
     }
   });
 };

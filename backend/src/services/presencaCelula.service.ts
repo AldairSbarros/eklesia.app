@@ -36,3 +36,33 @@ export const deletePresenca = async (id: number) => {
     where: { id }
   });
 };
+
+export const listarPresencasPorReuniao = async (reuniaoId: number) => {
+  return prisma.presencaCelula.findMany({
+    where: { reuniaoId },
+    include: { Member: true }
+  });
+};
+
+export const registrarOuAtualizarPresenca = async (reuniaoId: number, membroId: number, presente: boolean) => {
+  return prisma.presencaCelula.upsert({
+    where: {
+      presenca_unica: { // Use o nome do índice único definido no Prisma
+        reuniaoId,
+        membroId
+      }
+    },
+    update: { presente },
+    create: { reuniaoId, membroId, presente }
+  });
+};
+
+export default {
+  createPresenca,
+  listPresencas,
+  getPresenca,
+  updatePresenca,
+  deletePresenca,
+  listarPresencasPorReuniao,
+  registrarOuAtualizarPresenca
+};

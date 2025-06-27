@@ -53,3 +53,28 @@ export const remove = async (req: Request, res: Response) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+export const addMembro = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { membroId } = req.body;
+  try {
+    const membro = await celulaService.addMembroCelula(Number(id), Number(membroId));
+    res.status(201).json(membro);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export const removeMembro = async (req: Request, res: Response) => {
+  const { membroId } = req.params;
+  try {
+    await celulaService.removeMembroCelula(Number(membroId));
+    res.json({ message: 'Membro removido da célula.' });
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+export function listarMembros(arg0: string, listarMembros: any) {
+	throw new Error('Function not implemented.');
+}

@@ -146,6 +146,9 @@ model Member {
   escolaLideresTurma EscolaLideresTurma[] @relation("TurmaAlunos")
   encontros          Encontro[]       @relation("EncontroParticipantes")
   lideraMinisterios  Ministerio[]     @relation("MinisterioLider")
+  celulaId           Int?             // <-- Adicione esta linha
+  celula             Celula?          @relation(fields: [celulaId], references: [id]) // <-- E esta
+  dataNascimento     DateTime?
 }
 
 // Endereço do Membro
@@ -248,11 +251,19 @@ model Celula {
   liderId       Int?
   anfitriaoId   Int?
   congregacaoId Int
+  local         String?         // Novo campo: endereço/local da célula
+  diaSemana     String?         // Novo campo: dia da semana
+  horario       String?         // Novo campo: horário da célula
   Congregacao   Congregacao     @relation(fields: [congregacaoId], references: [id])
   lider         Member?         @relation("LiderCelula", fields: [liderId], references: [id])
   anfitriao     Member?         @relation("AnfitriaoCelula", fields: [anfitriaoId], references: [id])
+  membros       Member[]  // Associação de membros à célula
   reunioes      ReuniaoCelula[]
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
 }
+
+
 
 model ReuniaoCelula {
   id         Int               @id @default(autoincrement())
@@ -271,6 +282,8 @@ model PresencaCelula {
   presente      Boolean       @default(false)
   Member        Member        @relation(fields: [membroId], references: [id])
   ReuniaoCelula ReuniaoCelula @relation(fields: [reuniaoId], references: [id])
+
+  @@unique([reuniaoId, membroId], name: "presenca_unica")
 }
 
 model VisitanteCelula {
@@ -280,7 +293,6 @@ model VisitanteCelula {
   ReuniaoCelula ReuniaoCelula @relation(fields: [reuniaoId], references: [id])
 }
 
-// Mensagens, notificações, permissões, arquivos, logs, etc
 model MensagemCelula {
   id       Int      @id @default(autoincrement())
   titulo   String

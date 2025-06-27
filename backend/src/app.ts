@@ -1,105 +1,111 @@
+/// <reference path="./@types/express/index.d.ts" />
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 
 // Importação dos módulos de rotas
-import churchRoutes from './routes/church.routes';
-import congregacaoRoutes from './routes/congregacao.routes';
-import memberRoutes from './routes/member.routes';
-import offeringRoutes from './routes/offering.routes';
-import usuarioRoutes from './routes/usuario.routes';
-import dashboardRoutes from './routes/dashboard.routes';
-import despesaRoutes from './routes/despesa.routes';
-import authRoutes from './routes/auth.routes';
-import receitaRoutes from './routes/receita.routes';
-import investimentosRoutes from './routes/investimentos.routes';
-import mensagemCelulaRoutes from './routes/mensagemCelula.routes';
-import pastorRoutes from './routes/pastor.routes';
-import ministerioRoutes from './routes/ministerio.routes';
-import escolaLideresTurmaRoutes from './routes/escolaLideresTurma.routes';
-import ministerioLocalRoutes from './routes/ministerioLocal.routes';
-import escolaLideresModuloRoutes from './routes/escolaLideresModulo.routes';
-import escolaLideresLicaoRoutes from './routes/escolaLideresLicao.routes';
-import encontroRoutes from './routes/encontro.routes';
-import enderecoMembroRoutes from './routes/enderecoMembro.routes';
-import celulaRoutes from './routes/celula.routes';
-import reuniaoCelulaRoutes from './routes/reuniaoCelula.routes';
-import presencaCelulaRoutes from './routes/presencaCelula.routes';
-import visitanteCelulaRoutes from './routes/visitante.routes';
-import permissaoRoutes from './routes/permissao.routes';
-import usuarioPermissaoRoutes from './routes/usuarioPermissao.routes';
-import notificacaoRoutes from './routes/notificacao.routes';
-import webhookRoutes from './routes/webhook.routes';
-import tokenRecuperacaoSenhaRoutes from './routes/tokenRecuperacaoSenha.routes';
-import arquivoRoutes from './routes/arquivo.routes';
-import logRoutes from './routes/log.routes';
-import faturaRoutes from './routes/fatura.routes';
-import vendaRoutes from './routes/venda.routes';
-import enderecoIgrejaRoutes from './routes/enderecoIgreja.routes';
-import sermaoRoutes from './routes/sermao.routes';
-import passwordRoutes from './routes/password.routes';
-import financeiroRoutes from './routes/financeiro.routes';
+import churchRoutes from './routes/church.routes'; // Igrejas
+import congregacaoRoutes from './routes/congregacao.routes'; // Congregações
+import memberRoutes from './routes/member.routes'; // Membros
+import offeringRoutes from './routes/offering.routes'; // Ofertas
+import usuarioRoutes from './routes/usuario.routes'; // Usuários do sistema
+import dashboardRoutes from './routes/dashboard.routes'; // Dashboard
+import despesaRoutes from './routes/despesa.routes'; // Despesas
+import authRoutes from './routes/auth.routes'; // Autenticação
+import receitaRoutes from './routes/receita.routes'; // Receitas
+import investimentosRoutes from './routes/investimentos.routes'; // Investimentos
+import mensagemCelulaRoutes from './routes/mensagemCelula.routes'; // Mensagens de célula
+import pastorRoutes from './routes/pastor.routes'; // Pastores
+import ministerioRoutes from './routes/ministerio.routes'; // Ministérios
+import ministerioLocalRoutes from './routes/ministerioLocal.routes'; // Ministérios locais
+import escolaLideresTurmaRoutes from './routes/escolaLideresTurma.routes'; // Turmas da escola de líderes
+import escolaLideresModuloRoutes from './routes/escolaLideresModulo.routes'; // Módulos da escola de líderes
+import escolaLideresLicaoRoutes from './routes/escolaLideresLicao.routes'; // Lições da escola de líderes
+import encontroRoutes from './routes/encontro.routes'; // Encontros/Retiro
+import enderecoMembroRoutes from './routes/enderecoMembro.routes'; // Endereços dos membros
+import celulaRoutes from './routes/celula.routes'; // Células
+import reuniaoCelulaRoutes from './routes/reuniaoCelula.routes'; // Reuniões de célula
+import presencaCelulaRoutes from './routes/presencaCelula.routes'; // Presenças em célula
+import visitanteCelulaRoutes from './routes/visitante.routes'; // Visitantes em célula
+import permissaoRoutes from './routes/permissao.routes'; // Permissões
+import usuarioPermissaoRoutes from './routes/usuarioPermissao.routes'; // Permissões de usuário
+import notificacaoRoutes from './routes/notificacao.routes'; // Notificações
+import webhookRoutes from './routes/webhook.routes'; // Webhooks
+import tokenRecuperacaoSenhaRoutes from './routes/tokenRecuperacaoSenha.routes'; // Recuperação de senha
+import arquivoRoutes from './routes/arquivo.routes'; // Uploads/Arquivos
+import logRoutes from './routes/log.routes'; // Logs
+import faturaRoutes from './routes/fatura.routes'; // Faturas
+import vendaRoutes from './routes/venda.routes'; // Vendas
+import enderecoIgrejaRoutes from './routes/enderecoIgreja.routes'; // Endereço das igrejas
+import sermaoRoutes from './routes/sermao.routes'; // Sermões
+import passwordRoutes from './routes/password.routes'; // Rotas de senha
+import financeiroRoutes from './routes/financeiro.routes'; // Painel financeiro
+
 const app = express();
 
 app.use(cors());
 app.use(express.json());
 
-// Swagger
+// Documentação Swagger
 const swaggerDocument = require('./docs/swagger.json');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Rotas principais
-app.use('/api/igrejas', churchRoutes);
-app.use('/api/congregacoes', congregacaoRoutes);
-app.use('/api/membros', memberRoutes);
-app.use('/api/offerings', offeringRoutes);
-app.use('/api/usuarios', usuarioRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/despesas', despesaRoutes);
-app.use('/api/receitas', receitaRoutes);
-app.use('/api/investimentos', investimentosRoutes);
-app.use('/api/mensagens-celula', mensagemCelulaRoutes);
-app.use('/api/pastores', pastorRoutes);
-app.use('/api/ministerios', ministerioRoutes);
-app.use('/api/ministerios-locais', ministerioLocalRoutes);
-app.use('/api/escola-lideres-turmas', escolaLideresTurmaRoutes);
-app.use('/api/escola-lideres-modulos', escolaLideresModuloRoutes);
-app.use('/api/escola-lideres-etapas', escolaLideresTurmaRoutes);
-app.use('/api/escola-lideres-licoes', escolaLideresLicaoRoutes);
-app.use('/api/encontros', encontroRoutes);
-app.use('/api/enderecos-membro', enderecoMembroRoutes);
-app.use('/api/celulas', celulaRoutes);
-app.use('/api/reunioes-celula', reuniaoCelulaRoutes);
-app.use('/api/presencas-celula', presencaCelulaRoutes);
-app.use('/api/visitantes-celula', visitanteCelulaRoutes);
-app.use('/api/permissoes', permissaoRoutes);
-app.use('/api/usuario-permissoes', usuarioPermissaoRoutes);
-app.use('/api/notificacoes', notificacaoRoutes);
-app.use('/api/webhooks', webhookRoutes);
-app.use('/api/tokens-recuperacao-senha', tokenRecuperacaoSenhaRoutes);
-app.use('/api/arquivos', arquivoRoutes);
-app.use('/api/logs', logRoutes);
-app.use('/api/sermoes', sermaoRoutes);
-app.use('/api/enderecos-igreja', enderecoIgrejaRoutes);
-app.use('/api/vendas', vendaRoutes);
-app.use('/api/faturas', faturaRoutes);
-app.use('/api/financeiro', financeiroRoutes);
-app.use('/api/financeiro', financeiroRoutes);
-app.use('/uploads', express.static('uploads'));
-// Rota para arquivos estáticos
-app.use('/uploads', express.static('uploads'));
-// Rota pública para uploads
-app.use('/pdfs', express.static(path.resolve(__dirname, '../public/pdfs')));
+// Rotas de entidades principais
+app.use('/api/igrejas', churchRoutes); // CRUD de igrejas
+app.use('/api/congregacoes', congregacaoRoutes); // CRUD de congregações
+app.use('/api/membros', memberRoutes); // CRUD de membros
+app.use('/api/usuarios', usuarioRoutes); // CRUD de usuários
+app.use('/api/pastores', pastorRoutes); // CRUD de pastores
+
+// Rotas de células e reuniões
+app.use('/api/celulas', celulaRoutes); // CRUD de células e membros da célula
+app.use('/api/reunioes-celula', reuniaoCelulaRoutes); // CRUD de reuniões de célula
+app.use('/api/presencas-celula', presencaCelulaRoutes); // Presenças em reuniões de célula
+app.use('/api/visitantes-celula', visitanteCelulaRoutes); // Visitantes em reuniões de célula
+app.use('/api/mensagens-celula', mensagemCelulaRoutes); // Mensagens de célula
+
+// Rotas de ministérios e escola de líderes
+app.use('/api/ministerios', ministerioRoutes); // Ministérios
+app.use('/api/ministerios-locais', ministerioLocalRoutes); // Ministérios locais
+app.use('/api/escola-lideres-turmas', escolaLideresTurmaRoutes); // Turmas da escola de líderes
+app.use('/api/escola-lideres-modulos', escolaLideresModuloRoutes); // Módulos da escola de líderes
+app.use('/api/escola-lideres-licoes', escolaLideresLicaoRoutes); // Lições da escola de líderes
+
+// Rotas de finanças
+app.use('/api/offerings', offeringRoutes); // Ofertas
+app.use('/api/despesas', despesaRoutes); // Despesas
+app.use('/api/receitas', receitaRoutes); // Receitas
+app.use('/api/investimentos', investimentosRoutes); // Investimentos
+app.use('/api/financeiro', financeiroRoutes); // Painel financeiro
+app.use('/api/faturas', faturaRoutes); // Faturas
+app.use('/api/vendas', vendaRoutes); // Vendas
+
+// Outras rotas
+app.use('/api/dashboard', dashboardRoutes); // Dashboard
+app.use('/api/auth', authRoutes); // Autenticação
+app.use('/api/notificacoes', notificacaoRoutes); // Notificações
+app.use('/api/permissoes', permissaoRoutes); // Permissões
+app.use('/api/usuario-permissoes', usuarioPermissaoRoutes); // Permissões de usuário
+app.use('/api/webhooks', webhookRoutes); // Webhooks
+app.use('/api/tokens-recuperacao-senha', tokenRecuperacaoSenhaRoutes); // Recuperação de senha
+app.use('/api/arquivos', arquivoRoutes); // Uploads/Arquivos
+app.use('/api/logs', logRoutes); // Logs de ações
+app.use('/api/sermoes', sermaoRoutes); // Sermões
+app.use('/api/enderecos-membro', enderecoMembroRoutes); // Endereços dos membros
+app.use('/api/enderecos-igreja', enderecoIgrejaRoutes); // Endereços das igrejas
+app.use('/api/encontros', encontroRoutes); // Encontros/Retiros
+
+// Rotas de senha
+app.use('/api/password', passwordRoutes);
+
+// Rotas para arquivos estáticos
+app.use('/uploads', express.static('uploads')); // Uploads de arquivos
+app.use('/pdfs', express.static(path.resolve(__dirname, '../public/pdfs'))); // PDFs públicos
 
 // Rota base de status
 app.get('/', (req: Request, res: Response) => {
   res.send('API a179 rodando');
 });
-//Rota de recuperação de senha
-app.use("/api/password", passwordRoutes);
-
-app.use('/api/offerings', offeringRoutes);
 
 export default app;

@@ -21,17 +21,17 @@
 
 ## 2. Módulo de Usuários/Admin
 - [x] Cadastro, autenticação e login de usuários
-- [X] Recuperação e alteração de senha
+- [x] Recuperação e alteração de senha
 - [x] Permissões e papéis (admin, gestor, membro, etc)
 - [x] Listagem, atualização e remoção de usuários
 - [x] Logs de acesso e ações administrativas
 - [ ] Testes unitários e de integração
 
 ## 3. Módulo de Células
-- [ ] Cadastro e gerenciamento de células
-- [ ] Associação de membros a células
-- [ ] Registro de reuniões e frequência
-- [ ] Relatórios de células
+- [x] Cadastro e gerenciamento de células
+- [x] Associação de membros a células (via campo `celulaId` em Member)
+- [x] Registro de reuniões e frequência
+- [x] Relatórios de células
 - [ ] Testes unitários
 
 ## 4. Módulo de Discipulado
@@ -47,12 +47,13 @@
 - [ ] Testes unitários
 
 ## 6. Módulo de Relatórios
+- [x] Relatórios de células e financeiros
 - [ ] Relatórios automáticos por e-mail
 - [ ] Relatórios customizáveis por módulo
 - [ ] Exportação em PDF/Excel
 
 ## 7. Módulo de Mensagens/Notificações
-- [ ] Envio de mensagens internas
+- [x] Envio de mensagens internas (mensagens de célula)
 - [ ] Integração com WhatsApp e e-mail
 - [ ] Notificações push (se aplicável)
 
@@ -62,20 +63,20 @@
 - [ ] Integração com WhatsApp API
 
 ## 9. Segurança e Boas Práticas
-- [ ] Autenticação JWT ou OAuth2
-- [ ] Autorização por perfil/papel
-- [ ] Validação e sanitização de dados
-- [ ] Logs de auditoria
+- [x] Autenticação JWT
+- [x] Autorização por perfil/papel
+- [x] Validação e sanitização de dados
+- [x] Logs de auditoria
 - [ ] Rate limiting e proteção contra ataques comuns
 
 ## 10. Infraestrutura e Deploy
-- [ ] Configuração de variáveis de ambiente
+- [x] Configuração de variáveis de ambiente
 - [ ] Scripts de build e deploy automatizado
 - [ ] Backup automático dos bancos de dados
 - [ ] Monitoramento e alertas
 
 ## 11. Documentação
-- [ ] Documentação das rotas (Swagger/OpenAPI)
+- [x] Documentação das rotas (Swagger/OpenAPI)
 - [ ] Documentação de instalação e deploy
 - [ ] Manual do desenvolvedor
 
@@ -98,3 +99,70 @@ Priorize os módulos essenciais para o MVP (igrejas, usuários, células, financ
 Depois, avance para integrações, segurança, testes e automações.
 
 Se quiser detalhar algum módulo ou receber exemplos de código, só pedir.
+
+## 1. Integrações Externas Possíveis
+
+# a) Pagamentos e Finanças
+
+Mercado Pago/Pix: Receber doações, dízimos, mensalidades, eventos.
+Exemplo: gerar QR Code Pix, consultar status de pagamento, receber notificações de pagamento.
+PagSeguro, Stripe, PayPal: Alternativas para pagamentos online.
+
+# b) Comunicação
+
+WhatsApp API: Enviar mensagens automáticas para membros (avisos, lembretes de reunião, aniversários).
+E-mail (Zoho, SendGrid, Gmail API): Envio de relatórios, notificações, boletins, recuperação de senha.
+SMS (Twilio, Zenvia): Envio de alertas rápidos para membros.
+
+# c) Documentos e Arquivos
+
+Google Drive, Dropbox, AWS S3: Armazenar comprovantes, relatórios, documentos da igreja.
+
+# d) Outros
+
+Google Calendar: Sincronizar eventos e reuniões.
+Power BI/Tableau: Exportar dados para dashboards avançados.
+
+## 2. Exemplos de Automações
+
+# a) Rotinas Agendadas (cron jobs)
+Envio automático de relatórios por e-mail (mensal, semanal).
+Backup automático do banco de dados.
+Limpeza de arquivos temporários/antigos.
+Notificações de aniversariantes do dia.
+
+# b) Ações automáticas por evento
+Ao cadastrar um novo membro: enviar e-mail de boas-vindas.
+Ao registrar uma oferta: enviar recibo automático por e-mail.
+Ao marcar uma reunião: enviar lembrete por WhatsApp/E-mail/SMS.
+
+# c) Provisionamento
+
+Ao criar uma nova igreja: criar e-mail institucional automaticamente (Zoho, Google Workspace).
+Ao criar uma célula: gerar grupo de WhatsApp automaticamente (usando WhatsApp Business API).
+
+## 3. Sugestões de Arquitetura
+Use filas (RabbitMQ, BullMQ, SQS) para processar tarefas demoradas (envio de e-mails, geração de PDF, integrações externas).
+Use workers/background jobs para automações e rotinas agendadas.
+Centralize integrações externas em services separados (ex: pix.service.ts, whatsapp.service.ts, email.service.ts).
+Utilize webhooks para receber notificações de pagamentos, mensagens, etc.
+
+Você está na reta final do MVP do EklesiaApp!
+
+O que já está pronto:
+Funcionalidades essenciais: cadastro e gestão de igrejas, usuários, células, membros, reuniões, financeiro, permissões, autenticação, logs e relatórios básicos.
+Documentação das rotas (Swagger).
+Estrutura de código organizada e modular.
+O que falta para fechar o MVP:
+Testes unitários e de integração para garantir qualidade e estabilidade.
+Algumas automações e integrações externas (Pix, WhatsApp, e-mail, etc) ainda não implementadas, mas não são obrigatórias para o MVP.
+Documentação de instalação/deploy e manual do desenvolvedor.
+Melhorias de segurança (rate limiting, monitoramento, backups automáticos).
+Resumindo:
+Você já tem um backend funcional, pronto para uso real em igrejas, com as principais rotinas do dia a dia.
+Agora, o foco deve ser:
+
+Garantir qualidade (testes)
+Documentar para facilitar manutenção e deploy
+Planejar as próximas integrações e automações para evoluir além do MVP
+Parabéns, você está muito próximo de um MVP robusto!

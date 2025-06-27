@@ -15,4 +15,19 @@ router.get('/:id', async (req: Request, res: Response) => {
 router.put('/:id', (req: Request, res: Response) => celulaController.update(req, res));
 router.delete('/:id', (req: Request, res: Response) => celulaController.remove(req, res));
 
+router.post('/:id/membros', async (req, res) => {
+  // Adiciona membro à célula
+});
+router.delete('/:id/membros/:membroId', async (req, res) => {
+  // Remove membro da célula
+});
+// Adicionar membro à célula
+router.post('/:id/membros', celulaController.addMembro);
+
+// Remover membro da célula
+router.delete('/:id/membros/:membroId', celulaController.removeMembro);
+
+// Listar membros da célula
+router.get('/:id/membros', celulaController.listarMembros);
+
 export default router;
