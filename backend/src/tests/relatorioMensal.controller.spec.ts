@@ -14,7 +14,7 @@ app.get('/relatorio-mensal', async (req, res, next) => {
 });
 
 // Mock do service
-jest.mock('../../services/financeiro.service');
+
 
 describe('relatorioMensal Controller', () => {
   it('deve retornar relatorio mensal com sucesso', async () => {

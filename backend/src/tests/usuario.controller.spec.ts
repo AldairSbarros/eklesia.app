@@ -10,7 +10,7 @@ describe('Usuário - Rotas', () => {
         nome: 'Usuário Integração',
         email: `int${Date.now()}@teste.com`,
         senha: '123456',
-        perfil: 'admin',
+        perfil: 'ADMIN',
         token: process.env.TOKEN_ADMIN
       });
     expect(res.status).toBe(201);
@@ -24,7 +24,7 @@ describe('Usuário - Rotas', () => {
         nome: 'Usuário Inválido',
         email: 'emailinvalido',
         senha: '123456',
-        perfil: 'admin',
+        perfil: 'ADMIN',
         token: process.env.TOKEN_ADMIN
       });
     expect(res.status).toBe(400);

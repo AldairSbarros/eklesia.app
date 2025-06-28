@@ -143,7 +143,7 @@ export const login = async (req: Request, res: Response) => {
     return res.status(401).json({ error: 'Credenciais inválidas' });
   }
 
-  if (usuario.perfil === 'admin') {
+  if (usuario.perfil === 'ADMIN') {
     // Admin sempre pode logar, mesmo se ativo = false
   } else if (usuario.ativo === false) {
     return res.status(403).json({ error: 'Usuário bloqueado.' });

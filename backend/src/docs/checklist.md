@@ -48,19 +48,19 @@
 
 ## 6. Módulo de Relatórios
 - [x] Relatórios de células e financeiros
-- [ ] Relatórios automáticos por e-mail
+- [x] Relatórios automáticos por e-mail
 - [ ] Relatórios customizáveis por módulo
-- [ ] Exportação em PDF/Excel
+- [x] Exportação em PDF/Excel
 
 ## 7. Módulo de Mensagens/Notificações
 - [x] Envio de mensagens internas (mensagens de célula)
-- [ ] Integração com WhatsApp e e-mail
+- [x] Integração com WhatsApp e e-mail
 - [ ] Notificações push (se aplicável)
 
 ## 8. Integrações Externas
 - [ ] Integração com Zoho Mail (criação de e-mails institucionais)
 - [ ] Integração com Mercado Pago/Pix
-- [ ] Integração com WhatsApp API
+- [x] Integração com WhatsApp API
 
 ## 9. Segurança e Boas Práticas
 - [x] Autenticação JWT
@@ -100,69 +100,80 @@ Depois, avance para integrações, segurança, testes e automações.
 
 Se quiser detalhar algum módulo ou receber exemplos de código, só pedir.
 
+---
+
 ## 1. Integrações Externas Possíveis
 
-# a) Pagamentos e Finanças
+### a) Pagamentos e Finanças
 
-Mercado Pago/Pix: Receber doações, dízimos, mensalidades, eventos.
-Exemplo: gerar QR Code Pix, consultar status de pagamento, receber notificações de pagamento.
-PagSeguro, Stripe, PayPal: Alternativas para pagamentos online.
+- Mercado Pago/Pix: Receber doações, dízimos, mensalidades, eventos.
+  - Exemplo: gerar QR Code Pix, consultar status de pagamento, receber notificações de pagamento.
+- PagSeguro, Stripe, PayPal: Alternativas para pagamentos online.
 
-# b) Comunicação
+### b) Comunicação
 
-WhatsApp API: Enviar mensagens automáticas para membros (avisos, lembretes de reunião, aniversários).
-E-mail (Zoho, SendGrid, Gmail API): Envio de relatórios, notificações, boletins, recuperação de senha.
-SMS (Twilio, Zenvia): Envio de alertas rápidos para membros.
+- WhatsApp API: Enviar mensagens automáticas para membros (avisos, lembretes de reunião, aniversários).
+- E-mail (Zoho, SendGrid, Gmail API): Envio de relatórios, notificações, boletins, recuperação de senha.
+- SMS (Twilio, Zenvia): Envio de alertas rápidos para membros.
 
-# c) Documentos e Arquivos
+### c) Documentos e Arquivos
 
-Google Drive, Dropbox, AWS S3: Armazenar comprovantes, relatórios, documentos da igreja.
+- Google Drive, Dropbox, AWS S3: Armazenar comprovantes, relatórios, documentos da igreja.
 
-# d) Outros
+### d) Outros
 
-Google Calendar: Sincronizar eventos e reuniões.
-Power BI/Tableau: Exportar dados para dashboards avançados.
+- Google Calendar: Sincronizar eventos e reuniões.
+- Power BI/Tableau: Exportar dados para dashboards avançados.
+
+---
 
 ## 2. Exemplos de Automações
 
-# a) Rotinas Agendadas (cron jobs)
-Envio automático de relatórios por e-mail (mensal, semanal).
-Backup automático do banco de dados.
-Limpeza de arquivos temporários/antigos.
-Notificações de aniversariantes do dia.
+### a) Rotinas Agendadas (cron jobs)
+- [x] Envio automático de relatórios por e-mail (mensal, semanal)
+- [ ] Backup automático do banco de dados
+- [ ] Limpeza de arquivos temporários/antigos
+- [ ] Notificações de aniversariantes do dia
 
-# b) Ações automáticas por evento
-Ao cadastrar um novo membro: enviar e-mail de boas-vindas.
-Ao registrar uma oferta: enviar recibo automático por e-mail.
-Ao marcar uma reunião: enviar lembrete por WhatsApp/E-mail/SMS.
+### b) Ações automáticas por evento
+- [x] Ao cadastrar um novo membro: enviar e-mail de boas-vindas e WhatsApp
+- [ ] Ao registrar uma oferta: enviar recibo automático por e-mail
+- [ ] Ao marcar uma reunião: enviar lembrete por WhatsApp/E-mail/SMS
 
-# c) Provisionamento
+### c) Provisionamento
+- [ ] Ao criar uma nova igreja: criar e-mail institucional automaticamente (Zoho, Google Workspace)
+- [ ] Ao criar uma célula: gerar grupo de WhatsApp automaticamente (usando WhatsApp Business API)
 
-Ao criar uma nova igreja: criar e-mail institucional automaticamente (Zoho, Google Workspace).
-Ao criar uma célula: gerar grupo de WhatsApp automaticamente (usando WhatsApp Business API).
+---
 
 ## 3. Sugestões de Arquitetura
-Use filas (RabbitMQ, BullMQ, SQS) para processar tarefas demoradas (envio de e-mails, geração de PDF, integrações externas).
-Use workers/background jobs para automações e rotinas agendadas.
-Centralize integrações externas em services separados (ex: pix.service.ts, whatsapp.service.ts, email.service.ts).
-Utilize webhooks para receber notificações de pagamentos, mensagens, etc.
+
+- Use filas (RabbitMQ, BullMQ, SQS) para processar tarefas demoradas (envio de e-mails, geração de PDF, integrações externas).
+- Use workers/background jobs para automações e rotinas agendadas.
+- Centralize integrações externas em services separados (ex: pix.service.ts, whatsapp.service.ts, email.service.ts).
+- Utilize webhooks para receber notificações de pagamentos, mensagens, etc.
+
+---
 
 Você está na reta final do MVP do EklesiaApp!
 
 O que já está pronto:
-Funcionalidades essenciais: cadastro e gestão de igrejas, usuários, células, membros, reuniões, financeiro, permissões, autenticação, logs e relatórios básicos.
-Documentação das rotas (Swagger).
-Estrutura de código organizada e modular.
+- Funcionalidades essenciais: cadastro e gestão de igrejas, usuários, células, membros, reuniões, financeiro, permissões, autenticação, logs e relatórios básicos.
+- Documentação das rotas (Swagger).
+- Estrutura de código organizada e modular.
+
 O que falta para fechar o MVP:
-Testes unitários e de integração para garantir qualidade e estabilidade.
-Algumas automações e integrações externas (Pix, WhatsApp, e-mail, etc) ainda não implementadas, mas não são obrigatórias para o MVP.
-Documentação de instalação/deploy e manual do desenvolvedor.
-Melhorias de segurança (rate limiting, monitoramento, backups automáticos).
+- Testes unitários e de integração para garantir qualidade e estabilidade.
+- Algumas automações e integrações externas (Pix, WhatsApp, e-mail, etc) ainda não implementadas, mas não são obrigatórias para o MVP.
+- Documentação de instalação/deploy e manual do desenvolvedor.
+- Melhorias de segurança (rate limiting, monitoramento, backups automáticos).
+
 Resumindo:
 Você já tem um backend funcional, pronto para uso real em igrejas, com as principais rotinas do dia a dia.
 Agora, o foco deve ser:
 
-Garantir qualidade (testes)
-Documentar para facilitar manutenção e deploy
-Planejar as próximas integrações e automações para evoluir além do MVP
+- Garantir qualidade (testes)
+- Documentar para facilitar manutenção e deploy
+- Planejar as próximas integrações e automações para evoluir além do MVP
+
 Parabéns, você está muito próximo de um MVP robusto!

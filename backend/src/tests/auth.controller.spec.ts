@@ -9,7 +9,7 @@ describe("Auth Controller", () => {
         nome: "Usuário Teste",
         email: `teste${Date.now()}@teste.com`,
         senha: "123456",
-        perfil: "admin"
+        perfil: "ADMIN"
       });
     expect(res.status).toBe(201);
     expect(res.body).toHaveProperty("id");
@@ -24,7 +24,7 @@ describe("Auth Controller", () => {
         nome: "Login Teste",
         email,
         senha: "123456",
-        perfil: "admin"
+        perfil: "ADMIN"
       });
 
     // Agora, faça login

@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { enviarWhatsAppTwilio } from './twilio.service';
 const prisma = new PrismaClient();
 
 export const createMember = async (data: any) => {
@@ -11,15 +12,24 @@ export const createMember = async (data: any) => {
     if (!congregacao) throw new Error('Congregação não encontrada.');
     congregacaoId = congregacao.id;
   }
-  return prisma.member.create({
+  const membro = await prisma.member.create({
     data: {
       nome: data.nome,
       congregacaoId,
       telefone: data.telefone,
       email: data.email,
-      senha: data.senha
+      senha: data.senha,
+      dataNascimento: data.dataNascimento,
+      whatsapp: data.whatsapp,
     }
   });
+  // Envio automático de mensagem de boas-vindas
+  if (data.whatsapp) {
+    await enviarWhatsAppTwilio(data.whatsapp, `Olá ${data.nome}, seja bem-vindo à nossa igreja!`);
+  }
+
+  return membro;
+
 };
 
 export const listMembers = async (congregacaoId?: number) => {

@@ -1,5 +1,4 @@
-import { createUsuario } from '../services/usuario.service'; // Ajuste o caminho conforme necessário
-
+import { createUsuario } from '../services/usuario.service';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -15,7 +14,7 @@ describe('Usuario Service', () => {
       nome: 'Teste',
       email: 'teste@teste.com',
       senha: '123456',
-      perfil: 'ADMIN', // ou outro valor válido do seu enum/modelo
+      perfil: 'ADMIN' // use o valor correto do seu enum
     });
     expect(usuario).toHaveProperty('id');
     expect(usuario.email).toBe('teste@teste.com');

@@ -149,6 +149,7 @@ model Member {
   celulaId           Int?             // <-- Adicione esta linha
   celula             Celula?          @relation(fields: [celulaId], references: [id]) // <-- E esta
   dataNascimento     DateTime?
+  whatsapp           String? 
 }
 
 // Endereço do Membro
@@ -167,9 +168,9 @@ model EnderecoMembro {
 // Usuário pertence à Congregação
 
 enum PerfilUsuario {
-  admin
-  dirigente
-  tesoureiro
+  ADMIN
+  Dirigente
+  Tesoureiro
 }
 model Usuario {
   id              Int          @id @default(autoincrement())
@@ -188,6 +189,7 @@ model Usuario {
   arquivos        Arquivo[]
   createdAt       DateTime @default(now())
   logsAcesso      LogAcesso[]
+  whatsapp        String? // Novo campo para o número do WhatsApp
 }
 
 // Finanças e registros
@@ -420,4 +422,14 @@ model LogAcesso {
   detalhes    String?
   ip          String?
   criadoEm    DateTime @default(now())
+}
+
+model ConfigEmail {
+  id        Int    @id @default(autoincrement())
+  clienteId Int    @unique
+  smtpHost  String
+  smtpPort  Int
+  smtpUser  String
+  smtpPass  String
+  email     String // E-mail principal do cliente
 }

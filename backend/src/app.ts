@@ -41,6 +41,7 @@ import enderecoIgrejaRoutes from './routes/enderecoIgreja.routes'; // Endereço 
 import sermaoRoutes from './routes/sermao.routes'; // Sermões
 import passwordRoutes from './routes/password.routes'; // Rotas de senha
 import financeiroRoutes from './routes/financeiro.routes'; // Painel financeiro
+import configEmailRouter from './controllers/configEmail.controller';
 
 const app = express();
 
@@ -107,5 +108,7 @@ app.use('/pdfs', express.static(path.resolve(__dirname, '../public/pdfs'))); // 
 app.get('/', (req: Request, res: Response) => {
   res.send('API a179 rodando');
 });
+
+app.use('/api', configEmailRouter);
 
 export default app;

@@ -118,3 +118,29 @@ export async function getRelatorioMensalData(
     paraCentral
   };
 }
+
+export async function gerarRelatorioMensalHTML(
+  congregacaoId: string | number,
+  mes: string | number,
+  ano: string | number
+): Promise<string> {
+  const data = await getRelatorioMensalData(congregacaoId, mes, ano);
+
+  // Exemplo simples de HTML, você pode personalizar como quiser!
+  return `
+    <h1>Relatório Mensal</h1>
+    <p><strong>Total de Dízimos:</strong> R$ ${data.totalDizimos.toFixed(2)}</p>
+    <p><strong>Total de Ofertas:</strong> R$ ${data.totalOfertas.toFixed(2)}</p>
+    <p><strong>Total Arrecadado:</strong> R$ ${data.totalArrecadado.toFixed(2)}</p>
+    <p><strong>Comissão:</strong> R$ ${data.comissao.toFixed(2)}</p>
+    <p><strong>Para Central:</strong> R$ ${data.paraCentral.toFixed(2)}</p>
+    <h2>Dizimistas</h2>
+    <ul>
+      ${data.listaDizimistas.map(d => `<li>${d.nome}: R$ ${d.valor.toFixed(2)}</li>`).join('')}
+    </ul>
+    <h2>Ofertas por Culto</h2>
+    ${Object.entries(data.somaPorCulto).map(([culto, valor]) =>
+      `<p><strong>${culto}:</strong> R$ ${valor.toFixed(2)}</p>`
+    ).join('')}
+  `;
+}

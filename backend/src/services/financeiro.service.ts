@@ -106,3 +106,7 @@ export async function getRelatorioMensal(congregacaoId: number, mes: number, ano
     valorARecolher: valorRecolhido
   };
 }
+export default {
+  getResumoFinanceiro,
+  getRelatorioMensal
+};
