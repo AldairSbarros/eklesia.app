@@ -1,30 +1,34 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const criarInvestimento = async (data: any) => {
+export const criarInvestimento = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.investimento.create({ data });
 };
 
-export const listarInvestimentos = async () => {
+export const listarInvestimentos = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.investimento.findMany({
     orderBy: { data: 'desc' }
   });
 };
 
-export const atualizarInvestimento = async (id: number, data: any) => {
+export const atualizarInvestimento = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.investimento.update({
     where: { id },
     data
   });
 };
 
-export const removerInvestimento = async (id: number) => {
+export const removerInvestimento = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.investimento.delete({
     where: { id }
   });
 };
 
-export const obterInvestimento = async (id: number) => {
+export const obterInvestimento = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.investimento.findUnique({
     where: { id }
   });

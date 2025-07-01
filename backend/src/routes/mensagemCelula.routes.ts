@@ -1,15 +1,18 @@
-import { Router } from 'express';
-import * as mensagemCelulaController from '../controllers/mensagemCelula.controller';
+import { Router, Request, Response, NextFunction } from 'express';
+import { criarMensagem, listarMensagens, listarMensagensPDF, obterMensagem, atualizarMensagem, removerMensagem } from '../controllers/mensagemCelula.controller';
 
 const router = Router();
 
-router.post('/', mensagemCelulaController.criarMensagem);
-router.get('/', mensagemCelulaController.listarMensagens);
-router.get('/pdfs', mensagemCelulaController.listarMensagensPDF);
-import { Request, Response, NextFunction } from 'express';
+// Helper to wrap async route handlers and forward errors to Express
+const asyncHandler = (fn: Function) => (req: Request, res: Response, next: NextFunction) =>
+  Promise.resolve(fn(req, res, next)).catch(next);
 
-router.get('/:id', mensagemCelulaController.obterMensagem as (req: Request, res: Response, next: NextFunction) => any);
-router.put('/:id', mensagemCelulaController.atualizarMensagem);
-router.delete('/:id', mensagemCelulaController.removerMensagem);
+router.post('/', asyncHandler(criarMensagem));
+router.get('/', asyncHandler(listarMensagens));
+router.get('/pdfs', asyncHandler(listarMensagensPDF));
+
+router.get('/:id', asyncHandler(obterMensagem));
+router.put('/:id', asyncHandler(atualizarMensagem));
+router.delete('/:id', asyncHandler(removerMensagem));
 
 export default router;

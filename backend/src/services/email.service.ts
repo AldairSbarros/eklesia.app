@@ -38,3 +38,7 @@ export async function enviarEmail({ smtpConfig, to, subject, html }: EnviarEmail
     html,     // Corpo do e-mail em HTML
   });
 }
+
+export function upsertConfigEmail(schema: string, arg1: { clienteId: any; smtpHost: any; smtpPort: any; smtpUser: any; smtpPass: any; email: any; }) {
+  throw new Error('Function not implemented.');
+}

@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createTurma = async (data: any) => {
+export const createTurma = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.escolaLideresTurma.create({ data });
 };
 
-export const listTurmas = async () => {
+export const listTurmas = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.escolaLideresTurma.findMany({
     include: {
       Congregacao: true,
@@ -15,7 +16,8 @@ export const listTurmas = async () => {
   });
 };
 
-export const getTurma = async (id: number) => {
+export const getTurma = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.escolaLideresTurma.findUnique({
     where: { id },
     include: {
@@ -26,16 +28,17 @@ export const getTurma = async (id: number) => {
   });
 };
 
-export const updateTurma = async (id: number, data: any) => {
+export const updateTurma = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.escolaLideresTurma.update({
     where: { id },
     data
   });
 };
 
-export const deleteTurma = async (id: number) => {
+export const deleteTurma = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.escolaLideresTurma.delete({
     where: { id }
   });
 };
-

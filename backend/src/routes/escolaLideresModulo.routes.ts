@@ -1,14 +1,20 @@
-import { Router } from 'express';
-import * as moduloController from '../controllers/escolaLideresModulo.controller';
-import asyncHandler from 'express-async-handler';
+import { Router, Request, Response, NextFunction } from 'express';
+import * as escolaLideresModuloController from '../controllers/escolaLideresModulo.controller';
+
 const router = Router();
 
-router.post('/', asyncHandler(moduloController.create));
-router.get('/', asyncHandler(moduloController.list));
-router.get('/:id', asyncHandler(async (req, res, next) => {
-  await moduloController.get(req, res);
-}));
-router.put('/:id', asyncHandler(moduloController.update));
-router.delete('/:id', asyncHandler(moduloController.remove));
+// Handler para funções async
+function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
 
-export default router;
+// CRUD de módulos da escola de líderes
+router.post('/', asyncHandler(escolaLideresModuloController.create));
+router.get('/', asyncHandler(escolaLideresModuloController.list));
+router.get('/:id', asyncHandler(escolaLideresModuloController.get));
+router.put('/:id', asyncHandler(escolaLideresModuloController.update));
+router.delete('/:id', asyncHandler(escolaLideresModuloController.remove));

@@ -6,12 +6,18 @@ const router = express.Router();
 
 router.get('/exportar/excel', async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { congregacaoId, mes, ano } = req.query;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     if (!congregacaoId || !mes || !ano) {
       res.status(400).json({ error: 'Parâmetros congregacaoId, mes e ano são obrigatórios.' });
       return;
     }
     const dados = await getRelatorioMensalData(
+      schema,
       String(congregacaoId),
       String(mes),
       String(ano)
@@ -27,17 +33,23 @@ router.get('/exportar/excel', async (req: Request, res: Response) => {
 
 router.get('/exportar/pdf', async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { congregacaoId, mes, ano } = req.query;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     if (!congregacaoId || !mes || !ano) {
       res.status(400).json({ error: 'Parâmetros congregacaoId, mes e ano são obrigatórios.' });
       return;
     }
     const dados = await getRelatorioMensalData(
+      schema,
       String(congregacaoId),
       String(mes),
       String(ano)
     );
-    const buffer = gerarPDF(dados.listaDizimistas, 'Dizimistas');
+    const buffer = await gerarPDF(dados.listaDizimistas, 'Dizimistas');
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', 'attachment; filename=relatorio.pdf');
     res.send(buffer);

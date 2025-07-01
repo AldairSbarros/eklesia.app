@@ -3,12 +3,20 @@ import * as enderecoMembroController from '../controllers/enderecoMembro.control
 
 const router = Router();
 
-router.post('/', enderecoMembroController.create);
-router.get('/', enderecoMembroController.list);
-router.get('/:id', (req: Request, res: Response, next: NextFunction) => {
-  enderecoMembroController.get(req, res, next);
-});
-router.put('/:id', enderecoMembroController.update);
-router.delete('/:id', enderecoMembroController.remove);
+// Handler para funções async
+function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
+
+// CRUD de endereço do membro
+router.post('/', asyncHandler(enderecoMembroController.create));
+router.get('/', asyncHandler(enderecoMembroController.list));
+router.get('/:id', asyncHandler(enderecoMembroController.get));
+router.put('/:id', asyncHandler(enderecoMembroController.update));
+router.delete('/:id', asyncHandler(enderecoMembroController.remove));
 
 export default router;

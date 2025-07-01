@@ -11,7 +11,7 @@ const router = Router();
 router.post(
   "/",
   autenticarJWT,
-  autorizarRoles(["admin"]),
+  autorizarRoles(["ADMIN"]),
   autenticarJWT,
   validarCadastroIgreja,
   handleValidation,
@@ -20,13 +20,13 @@ router.post(
 router.put(
   "/:id",
   autenticarJWT,
-  autorizarRoles(["admin"]),
+  autorizarRoles(["ADMIN"]),
   churchController.update
 );
 router.delete(
   "/:id",
   autenticarJWT,
-  autorizarRoles(["admin"]),
+  autorizarRoles(["ADMIN"]),
   churchController.remove
 );
 

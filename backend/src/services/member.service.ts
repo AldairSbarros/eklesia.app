@@ -1,8 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from "../utils/prismaDynamic";
 import { enviarWhatsAppTwilio } from './twilio.service';
-const prisma = new PrismaClient();
 
-export const createMember = async (data: any) => {
+export const createMember = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
+
   // Busca a congregação pelo nome (caso venha no data)
   let congregacaoId = data.congregacaoId;
   if (!congregacaoId && data.congregacaoNome) {
@@ -29,10 +30,10 @@ export const createMember = async (data: any) => {
   }
 
   return membro;
-
 };
 
-export const listMembers = async (congregacaoId?: number) => {
+export const listMembers = async (schema: string, congregacaoId?: number) => {
+  const prisma = getPrisma(schema);
   const where: any = {};
   if (congregacaoId) where.congregacaoId = congregacaoId;
   return prisma.member.findMany({
@@ -45,20 +46,23 @@ export const listMembers = async (congregacaoId?: number) => {
   });
 };
 
-export const getMember = async (id: number) => {
+export const getMember = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.member.findUnique({
     where: { id }
   });
 };
 
-export const updateMember = async (id: number, data: any) => {
+export const updateMember = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.member.update({
     where: { id },
     data
   });
 };
 
-export const deleteMember = async (id: number) => {
+export const deleteMember = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.member.delete({
     where: { id }
   });

@@ -1,18 +1,20 @@
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from "../utils/prismaDynamic";
 
-const prisma = new PrismaClient();
-
-export async function registrarLog({
-  usuarioId,
-  acao,
-  detalhes,
-  ip
-}: {
-  usuarioId?: number;
-  acao: string;
-  detalhes?: string;
-  ip?: string;
-}) {
+export async function registrarLog(
+  schema: string,
+  {
+    usuarioId,
+    acao,
+    detalhes,
+    ip
+  }: {
+    usuarioId?: number;
+    acao: string;
+    detalhes?: string;
+    ip?: string;
+  }
+) {
+  const prisma = getPrisma(schema);
   await prisma.logAcesso.create({
     data: { usuarioId, acao, detalhes, ip }
   });

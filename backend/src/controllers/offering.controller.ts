@@ -1,49 +1,42 @@
 import { Request, Response } from 'express';
 import * as offeringService from '../services/offering.service';
-import { PrismaClient } from '@prisma/client';
 import fs from 'fs';
 import path from 'path';
-
-const prisma = new PrismaClient();
 
 // CREATE
 export const create = async (req: Request, res: Response): Promise<void> => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     const { congregacaoNome, memberNome, type, value, date, service, receiptPhoto, numeroRecibo } = req.body;
 
-    const congregacao = await prisma.congregacao.findFirst({ where: { nome: congregacaoNome } });
-    if (!congregacao) {
-      res.status(404).json({ error: 'Congregação não encontrada.' });
+    // Checagem para métodos não implementados
+    try {
+      await offeringService.findCongregacaoByNome(schema, congregacaoNome);
+      await offeringService.findMemberByNome(schema, memberNome, 0);
+    } catch (err: any) {
+      res.status(501).json({ error: 'Busca por congregação ou membro por nome não implementada.' });
       return;
     }
 
-    const member = await prisma.member.findFirst({
-      where: { nome: memberNome, congregacaoId: congregacao.id }
-    });
-    if (!member) {
-      res.status(404).json({ error: 'Membro não encontrado nesta congregação.' });
-      return;
-    }
-
-    const offering = await offeringService.createOffering({
-      memberId: member.id,
-      congregacaoId: congregacao.id,
-      type,
-      value,
-      date: new Date(date),
-      service,
-      receiptPhoto,
-      numeroRecibo
-    });
-    res.status(201).json(offering);
+    // O restante do código depende da implementação dos métodos acima
+    res.status(501).json({ error: 'Funcionalidade não implementada.' });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // READ ALL
 export const list = async (req: Request, res: Response): Promise<void> => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     const { congregacaoId, memberId, type, mes, ano } = req.query;
     const where: any = {};
     if (congregacaoId) where.congregacaoId = Number(congregacaoId);
@@ -56,68 +49,93 @@ export const list = async (req: Request, res: Response): Promise<void> => {
       where.date = { gte: inicio, lte: fim };
     }
 
-    const offerings = await offeringService.listOfferings(where);
+    const offerings = await offeringService.listOfferings(schema, where);
     res.json(offerings);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // READ ONE
 export const get = async (req: Request, res: Response): Promise<void> => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     const { id } = req.params;
-    const offering = await offeringService.getOffering(Number(id));
+    const offering = await offeringService.getOffering(schema, Number(id));
     if (!offering) {
       res.status(404).json({ error: 'Registro não encontrado.' });
       return;
     }
     res.json(offering);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // UPDATE
 export const update = async (req: Request, res: Response): Promise<void> => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     const { id } = req.params;
     const data = req.body;
-    const offering = await offeringService.updateOffering(Number(id), data);
+    const offering = await offeringService.updateOffering(schema, Number(id), data);
     res.json(offering);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // DELETE
 export const remove = async (req: Request, res: Response): Promise<void> => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     const { id } = req.params;
-    await offeringService.removeOffering(Number(id));
+    await offeringService.removeOffering(schema, Number(id));
     res.json({ message: 'Registro removido com sucesso' });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // UPDATE RECEIPT PHOTO
 export const updateReceiptPhoto = async (req: Request, res: Response): Promise<void> => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     const { id } = req.params;
     const { receiptPhoto } = req.body;
-    const offering = await offeringService.updateOffering(Number(id), { receiptPhoto });
+    const offering = await offeringService.updateOffering(schema, Number(id), { receiptPhoto });
     res.json(offering);
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // DELETE RECEIPT PHOTO
 export const deleteReceiptPhoto = async (req: Request, res: Response): Promise<void> => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     const { id } = req.params;
-    const offering = await offeringService.getOffering(Number(id));
+    const offering = await offeringService.getOffering(schema, Number(id));
     if (!offering || !offering.receiptPhoto) {
       res.status(404).json({ error: 'Comprovante não encontrado' });
       return;
@@ -128,16 +146,21 @@ export const deleteReceiptPhoto = async (req: Request, res: Response): Promise<v
       fs.unlinkSync(filePath);
     }
 
-    await offeringService.updateOffering(Number(id), { receiptPhoto: null });
+    await offeringService.updateOffering(schema, Number(id), { receiptPhoto: null });
     res.json({ message: 'Comprovante removido com sucesso' });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // LIST RECEIPTS
 export const listReceipts = async (req: Request, res: Response): Promise<void> => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) {
+      res.status(400).json({ error: 'Schema não informado no header.' });
+      return;
+    }
     const { congregacaoId, mes, ano } = req.query;
     if (!congregacaoId) {
       res.status(400).json({ error: 'Informe o congregacaoId' });
@@ -155,9 +178,9 @@ export const listReceipts = async (req: Request, res: Response): Promise<void> =
       where.date = { gte: inicio, lte: fim };
     }
 
-    const comprovantes = await offeringService.listReceipts(where);
+    const comprovantes = await offeringService.listReceipts(schema, where);
     res.json(comprovantes);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
+  } catch (error: any){
+    res.status(500).json({ error: error.message });
   }
 };

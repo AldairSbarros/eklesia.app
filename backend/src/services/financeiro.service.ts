@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { getPrisma } from "../utils/prismaDynamic";
 import manualCodigos from '../utils/manualCodigos.json';
 
-const prisma = new PrismaClient();
+export async function getResumoFinanceiro(schema: string, congregacaoId: number, mes?: number, ano?: number) {
+  const prisma = getPrisma(schema);
 
-export async function getResumoFinanceiro(congregacaoId: number, mes?: number, ano?: number) {
   let dateFilter = {};
   if (mes && ano) {
     const inicio = new Date(ano, mes - 1, 1);
@@ -41,7 +41,9 @@ export async function getResumoFinanceiro(congregacaoId: number, mes?: number, a
   return { offerings, receitas, despesas, investimentos };
 }
 
-export async function getRelatorioMensal(congregacaoId: number, mes: number, ano: number) {
+export async function getRelatorioMensal(schema: string, congregacaoId: number, mes: number, ano: number) {
+  const prisma = getPrisma(schema);
+
   const inicio = new Date(ano, mes - 1, 1);
   const fim = new Date(ano, mes, 0, 23, 59, 59);
 
@@ -106,6 +108,7 @@ export async function getRelatorioMensal(congregacaoId: number, mes: number, ano
     valorARecolher: valorRecolhido
   };
 }
+
 export default {
   getResumoFinanceiro,
   getRelatorioMensal

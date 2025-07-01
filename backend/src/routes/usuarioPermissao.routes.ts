@@ -4,9 +4,15 @@ import { autenticarJWT } from '../middleware/autenticarJWT';
 
 const router = Router();
 
-router.post('/', autenticarJWT, usuarioPermissaoController.create);
-router.get('/', autenticarJWT, usuarioPermissaoController.list);
-router.put('/:id', autenticarJWT, usuarioPermissaoController.update);
-router.delete('/:id', autenticarJWT, usuarioPermissaoController.remove);
+function asyncHandler(fn: any) {
+  return function (req: any, res: any, next: any) {
+	Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
+
+router.post('/', autenticarJWT, asyncHandler(usuarioPermissaoController.create));
+router.get('/', autenticarJWT, asyncHandler(usuarioPermissaoController.list));
+router.put('/:id', autenticarJWT, asyncHandler(usuarioPermissaoController.update));
+router.delete('/:id', autenticarJWT, asyncHandler(usuarioPermissaoController.remove));
 
 export default router;

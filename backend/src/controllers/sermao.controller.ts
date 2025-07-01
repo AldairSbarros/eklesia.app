@@ -4,7 +4,10 @@ import * as sermaoService from '../services/sermao.service';
 // Criar sermão
 export const create = async (req: Request, res: Response) => {
   try {
-    const sermao = await sermaoService.createSermao(req.body);
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
+    const sermao = await sermaoService.createSermao(schema, req.body);
     res.status(201).json(sermao);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -14,7 +17,10 @@ export const create = async (req: Request, res: Response) => {
 // Listar sermões
 export const list = async (req: Request, res: Response) => {
   try {
-    const sermaos = await sermaoService.listSermaos();
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
+    const sermaos = await sermaoService.listSermaos(schema);
     res.json(sermaos);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -24,8 +30,11 @@ export const list = async (req: Request, res: Response) => {
 // Obter sermão por ID
 export const get = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    const sermao = await sermaoService.getSermao(Number(id));
+    const sermao = await sermaoService.getSermao(schema, Number(id));
     if (!sermao) return res.status(404).json({ error: 'Sermão não encontrado.' });
     res.json(sermao);
   } catch (error: any) {
@@ -36,8 +45,11 @@ export const get = async (req: Request, res: Response) => {
 // Atualizar sermão
 export const update = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    const sermao = await sermaoService.updateSermao(Number(id), req.body);
+    const sermao = await sermaoService.updateSermao(schema, Number(id), req.body);
     res.json(sermao);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -47,8 +59,11 @@ export const update = async (req: Request, res: Response) => {
 // Remover sermão
 export const remove = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    await sermaoService.deleteSermao(Number(id));
+    await sermaoService.deleteSermao(schema, Number(id));
     res.json({ message: 'Sermão removido com sucesso.' });
   } catch (error: any) {
     res.status(400).json({ error: error.message });

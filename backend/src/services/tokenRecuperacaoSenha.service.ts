@@ -1,36 +1,28 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createToken = async (data: any) => {
+export const criarToken = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.tokenRecuperacaoSenha.create({ data });
 };
 
-export const listTokens = async () => {
-  return prisma.tokenRecuperacaoSenha.findMany({
-    include: {
-      usuario: true
-    }
-  });
-};
-
-export const getToken = async (id: number) => {
+export const obterToken = async (schema: string, token: string) => {
+  const prisma = getPrisma(schema);
   return prisma.tokenRecuperacaoSenha.findUnique({
-    where: { id },
-    include: {
-      usuario: true
-    }
+    where: { token }
   });
 };
 
-export const updateToken = async (id: number, data: any) => {
-  return prisma.tokenRecuperacaoSenha.update({
-    where: { id },
-    data
-  });
-};
-
-export const deleteToken = async (id: number) => {
+export const removerToken = async (schema: string, token: string) => {
+  const prisma = getPrisma(schema);
   return prisma.tokenRecuperacaoSenha.delete({
-    where: { id }
+    where: { token }
+  });
+};
+
+export const atualizarToken = async (schema: string, token: string, data: any) => {
+  const prisma = getPrisma(schema);
+  return prisma.tokenRecuperacaoSenha.update({
+    where: { token },
+    data
   });
 };

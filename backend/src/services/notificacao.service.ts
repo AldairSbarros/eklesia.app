@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createNotificacao = async (data: any) => {
+export const createNotificacao = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.notificacao.create({ data });
 };
 
-export const listNotificacoes = async () => {
+export const listNotificacoes = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.notificacao.findMany({
     include: {
       Usuario: true
@@ -13,7 +14,8 @@ export const listNotificacoes = async () => {
   });
 };
 
-export const getNotificacao = async (id: number) => {
+export const getNotificacao = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.notificacao.findUnique({
     where: { id },
     include: {
@@ -22,37 +24,17 @@ export const getNotificacao = async (id: number) => {
   });
 };
 
-export const updateNotificacao = async (id: number, data: any) => {
+export const updateNotificacao = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.notificacao.update({
     where: { id },
     data
   });
 };
 
-export const deleteNotificacao = async (id: number) => {
+export const deleteNotificacao = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.notificacao.delete({
     where: { id }
   });
 };
-
-export function create(arg0: string, create: any) {
-    throw new Error('Function not implemented.');
-}
-export function list(arg0: string, list: any) {
-    throw new Error('Function not implemented.');
-}
-
-export function get(arg0: string, get: any) {
-    throw new Error('Function not implemented.');
-}
-
-export function update(arg0: string, update: any) {
-    throw new Error('Function not implemented.');
-}
-
-
-
-export function remove(arg0: string, remove: any) {
-    throw new Error('Function not implemented.');
-}
-

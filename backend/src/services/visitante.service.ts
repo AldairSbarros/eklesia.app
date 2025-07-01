@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createVisitante = async (data: any) => {
+export const createVisitante = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.visitanteCelula.create({ data });
 };
 
-export const listVisitantes = async () => {
+export const listVisitantes = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.visitanteCelula.findMany({
     include: {
       ReuniaoCelula: true
@@ -13,7 +14,8 @@ export const listVisitantes = async () => {
   });
 };
 
-export const getVisitante = async (id: number) => {
+export const getVisitante = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.visitanteCelula.findUnique({
     where: { id },
     include: {
@@ -22,14 +24,16 @@ export const getVisitante = async (id: number) => {
   });
 };
 
-export const updateVisitante = async (id: number, data: any) => {
+export const updateVisitante = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.visitanteCelula.update({
     where: { id },
     data
   });
 };
 
-export const deleteVisitante = async (id: number) => {
+export const deleteVisitante = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.visitanteCelula.delete({
     where: { id }
   });

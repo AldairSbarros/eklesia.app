@@ -1,10 +1,13 @@
 import request from 'supertest';
 import app from '../app';
 
-describe('Usuário Controller', () => {
+const SCHEMA = 'cliente_teste'; // Defina o schema de teste
+
+describe('Usuário Controller (multi-tenant)', () => {
   it('deve cadastrar um usuário via API', async () => {
     const res = await request(app)
       .post('/api/usuarios')
+      .set('schema', SCHEMA)
       .send({ 
         nome: 'Teste', 
         email: 'teste@teste.com', 

@@ -1,11 +1,13 @@
 import request from 'supertest';
-import app from '../app';
- // ajuste o caminho conforme seu projeto
+import app from '../app'; // ajuste o caminho conforme seu projeto
 
-describe('Usuário - Rotas', () => {
+const SCHEMA = 'cliente_teste'; // Defina o schema de teste
+
+describe('Usuário - Rotas (multi-tenant)', () => {
   it('deve cadastrar um usuário', async () => {
     const res = await request(app)
       .post('/api/usuarios')
+      .set('schema', SCHEMA)
       .send({
         nome: 'Usuário Integração',
         email: `int${Date.now()}@teste.com`,
@@ -20,6 +22,7 @@ describe('Usuário - Rotas', () => {
   it('não deve cadastrar usuário com e-mail inválido', async () => {
     const res = await request(app)
       .post('/api/usuarios')
+      .set('schema', SCHEMA)
       .send({
         nome: 'Usuário Inválido',
         email: 'emailinvalido',

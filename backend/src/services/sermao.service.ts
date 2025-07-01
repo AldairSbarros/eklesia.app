@@ -1,28 +1,32 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createSermao = async (data: any) => {
+export const createSermao = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.sermao.create({ data });
 };
 
-export const listSermaos = async () => {
+export const listSermaos = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.sermao.findMany();
 };
 
-export const getSermao = async (id: number) => {
+export const getSermao = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.sermao.findUnique({
     where: { id }
   });
 };
 
-export const updateSermao = async (id: number, data: any) => {
+export const updateSermao = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.sermao.update({
     where: { id },
     data
   });
 };
 
-export const deleteSermao = async (id: number) => {
+export const deleteSermao = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.sermao.delete({
     where: { id }
   });

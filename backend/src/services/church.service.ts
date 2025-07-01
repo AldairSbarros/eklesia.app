@@ -1,31 +1,43 @@
 import { PrismaClient } from "@prisma/client";
-import { exec } from "child_process";
+import { execSync } from "child_process";
 import bcrypt from "bcrypt";
 import { logAuditoria } from "../utils/logger";
 
-const prisma = new PrismaClient();
+// Prisma global (schema público)
+const prismaGlobal = new PrismaClient();
 
-// Função utilitária para criar banco e rodar migrations
-function criarBanco(nomeBanco: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const usuario = process.env.PGUSER || "postgres";
-    const senha = process.env.PGPASSWORD || "suaSenha";
-    exec(`PGPASSWORD=${senha} createdb -U ${usuario} ${nomeBanco}`, (err) => {
-      if (err) {
-        if (err.message.includes("already exists")) {
-          return reject(new Error("Banco de dados já existe."));
-        }
-        return reject(err);
-      }
-      exec(
-        `npx prisma migrate deploy --schema=prisma/schema.prisma`,
-        (err2) => {
-          if (err2) return reject(err2);
-          resolve();
-        }
-      );
-    });
+// Cria um novo schema no PostgreSQL
+async function criarSchema(nomeSchema: string) {
+  await prismaGlobal.$executeRawUnsafe(`CREATE SCHEMA IF NOT EXISTS "${nomeSchema}"`);
+}
+
+// Roda as migrations do Prisma no novo schema
+function rodarMigrationsNoSchema(schema: string) {
+  const dbUrl = process.env.DATABASE_URL!.replace(/schema=([a-zA-Z0-9_]+)/, `schema=${schema}`);
+  execSync(`npx prisma migrate deploy`, {
+    env: { ...process.env, DATABASE_URL: dbUrl }
   });
+}
+
+// Cria o usuário admin no novo schema
+async function criarAdminNoSchema({ nome, email, senha, schema }: { nome: string, email: string, senha: string, schema: string }) {
+  const { PrismaClient: PrismaTenant } = require("@prisma/client");
+  const dbUrl = process.env.DATABASE_URL!.replace(/schema=([a-zA-Z0-9_]+)/, `schema=${schema}`);
+  const prismaTenant = new PrismaTenant({
+    datasources: {
+      db: { url: dbUrl }
+    }
+  });
+  await prismaTenant.usuario.create({
+    data: {
+      nome,
+      email,
+      senha,
+      perfil: "ADMIN",
+      ativo: true
+    }
+  });
+  await prismaTenant.$disconnect();
 }
 
 // Função utilitária para validar campos obrigatórios
@@ -37,7 +49,7 @@ function validarCamposObrigatorios(data: { nome?: string; email?: string }) {
   return erros;
 }
 
-// Criação de igreja com tratamento detalhado de erros e log
+// Criação de igreja multi-tenant por schema
 export const createChurch = async (data: any) => {
   const erros = validarCamposObrigatorios(data);
   if (erros.length > 0) {
@@ -46,27 +58,29 @@ export const createChurch = async (data: any) => {
   if (data.password && data.password.length < 6) {
     throw new Error("A senha deve ter pelo menos 6 caracteres.");
   }
-  const senhaParaSalvar = await bcrypt.hash(
-    data.password || "defaultPassword",
-    10
-  );
-  const nomeBanco = `igreja_${Date.now()}`;
+  const senhaParaSalvar = await bcrypt.hash(data.password || "defaultPassword", 10);
+  const nomeSchema = `igreja_${Date.now()}`;
+
   try {
-    await criarBanco(nomeBanco);
+    await criarSchema(nomeSchema);
+    rodarMigrationsNoSchema(nomeSchema);
+    await criarAdminNoSchema({
+      nome: data.nome,
+      email: data.email,
+      senha: senhaParaSalvar,
+      schema: nomeSchema
+    });
   } catch (error: any) {
-    if (error.message === "Banco de dados já existe.") {
-      throw new Error("Já existe um banco de dados com esse nome.");
-    }
-    throw new Error("Erro ao criar banco: " + error.message);
+    throw new Error("Erro ao criar schema ou rodar migrations: " + error.message);
   }
 
   try {
-    const novaIgreja = await prisma.church.create({
+    const novaIgreja = await prismaGlobal.church.create({
       data: {
         nome: data.nome,
         email: data.email,
         password: senhaParaSalvar,
-        schema: nomeBanco,
+        schema: nomeSchema,
         status: data.status || "ativa",
       },
     });
@@ -80,9 +94,21 @@ export const createChurch = async (data: any) => {
   }
 };
 
+// Exemplo de função para obter PrismaClient do schema correto
+export function getPrismaTenant(schema: string) {
+  const { PrismaClient: PrismaTenant } = require("@prisma/client");
+  const dbUrl = process.env.DATABASE_URL!.replace(/schema=([a-zA-Z0-9_]+)/, `schema=${schema}`);
+  return new PrismaTenant({
+    datasources: {
+      db: { url: dbUrl }
+    }
+  });
+}
+
+// As funções listChurches, getChurch, updateChurch, deleteChurch continuam usando prismaGlobal
 export const listChurches = async () => {
   try {
-    return await prisma.church.findMany();
+    return await prismaGlobal.church.findMany();
   } catch (error: any) {
     throw new Error("Erro ao listar igrejas: " + error.message);
   }
@@ -90,7 +116,7 @@ export const listChurches = async () => {
 
 export const getChurch = async (id: number) => {
   try {
-    const igreja = await prisma.church.findUnique({ where: { id } });
+    const igreja = await prismaGlobal.church.findUnique({ where: { id } });
     if (!igreja) {
       throw new Error("Igreja não encontrada.");
     }
@@ -105,7 +131,6 @@ export const updateChurch = async (id: number, data: any) => {
   if (erros.length > 0) {
     throw new Error(erros.join(" "));
   }
-  // Se for enviada uma nova senha, valida e faz hash
   let dadosParaAtualizar = { ...data };
   if (data.password) {
     if (data.password.length < 6) {
@@ -115,7 +140,7 @@ export const updateChurch = async (id: number, data: any) => {
   }
 
   try {
-    const igreja = await prisma.church.update({
+    const igreja = await prismaGlobal.church.update({
       where: { id },
       data: dadosParaAtualizar,
     });
@@ -137,7 +162,7 @@ export const updateChurch = async (id: number, data: any) => {
 
 export const deleteChurch = async (id: number) => {
   try {
-    await prisma.church.delete({
+    await prismaGlobal.church.delete({
       where: { id },
     });
     logAuditoria("Remoção de igreja", { id });

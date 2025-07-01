@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createPastor = async (data: any) => {
+export const createPastor = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.pastor.create({ data });
 };
 
-export const listPastores = async () => {
+export const listPastores = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.pastor.findMany({
     include: {
       churchPrincipal: true,
@@ -14,7 +15,8 @@ export const listPastores = async () => {
   });
 };
 
-export const getPastor = async (id: number) => {
+export const getPastor = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.pastor.findUnique({
     where: { id },
     include: {
@@ -24,14 +26,16 @@ export const getPastor = async (id: number) => {
   });
 };
 
-export const updatePastor = async (id: number, data: any) => {
+export const updatePastor = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.pastor.update({
     where: { id },
     data
   });
 };
 
-export const deletePastor = async (id: number) => {
+export const deletePastor = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.pastor.delete({
     where: { id }
   });

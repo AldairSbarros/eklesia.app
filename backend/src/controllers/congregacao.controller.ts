@@ -4,7 +4,8 @@ import * as congregacaoService from '../services/congregacao.service';
 // Criar congregação
 export const create = async (req: Request, res: Response) => {
   try {
-    const congregacao = await congregacaoService.createCongregacao(req.body);
+    const schema = req.headers['schema'] as string;
+    const congregacao = await congregacaoService.createCongregacao(schema, req.body);
     res.status(201).json(congregacao);
   } catch (error: any) {
     res.status(500).json({ error: 'Erro ao criar congregação' });
@@ -14,7 +15,8 @@ export const create = async (req: Request, res: Response) => {
 // Listar congregações
 export const list = async (req: Request, res: Response) => {
   try {
-    const congregacoes = await congregacaoService.listCongregacoes();
+    const schema = req.headers['schema'] as string;
+    const congregacoes = await congregacaoService.listCongregacoes(schema);
     res.status(200).json(congregacoes);
   } catch (error: any) {
     res.status(500).json({ error: 'Erro ao listar congregações' });
@@ -24,8 +26,9 @@ export const list = async (req: Request, res: Response) => {
 // Editar congregação
 export const update = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { id } = req.params;
-    const congregacao = await congregacaoService.updateCongregacao(Number(id), req.body);
+    const congregacao = await congregacaoService.updateCongregacao(schema, Number(id), req.body);
     res.json(congregacao);
   } catch (error: any) {
     res.status(500).json({ error: 'Erro ao atualizar congregação' });
@@ -35,8 +38,9 @@ export const update = async (req: Request, res: Response) => {
 // Deletar congregação
 export const remove = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { id } = req.params;
-    await congregacaoService.deleteCongregacao(Number(id));
+    await congregacaoService.deleteCongregacao(schema, Number(id));
     res.json({ message: 'Congregação removida com sucesso' });
   } catch (error: any) {
     res.status(500).json({ error: 'Erro ao remover congregação' });

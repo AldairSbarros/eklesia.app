@@ -4,7 +4,8 @@ import * as memberService from '../services/member.service';
 // CREATE
 export const create = async (req: Request, res: Response) => {
   try {
-    const member = await memberService.createMember(req.body);
+    const schema = req.headers['schema'] as string;
+    const member = await memberService.createMember(schema, req.body);
     res.status(201).json(member);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -14,8 +15,9 @@ export const create = async (req: Request, res: Response) => {
 // READ ALL
 export const list = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { congregacaoId } = req.query;
-    const members = await memberService.listMembers(congregacaoId ? Number(congregacaoId) : undefined);
+    const members = await memberService.listMembers(schema, congregacaoId ? Number(congregacaoId) : undefined);
     res.json(members);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -25,8 +27,9 @@ export const list = async (req: Request, res: Response) => {
 // READ ONE
 export const get = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { id } = req.params;
-    const member = await memberService.getMember(Number(id));
+    const member = await memberService.getMember(schema, Number(id));
     if (!member) return res.status(404).json({ error: 'Membro não encontrado.' });
     res.json(member);
   } catch (error: any) {
@@ -37,8 +40,9 @@ export const get = async (req: Request, res: Response) => {
 // UPDATE
 export const update = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { id } = req.params;
-    const member = await memberService.updateMember(Number(id), req.body);
+    const member = await memberService.updateMember(schema, Number(id), req.body);
     res.json(member);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -48,10 +52,11 @@ export const update = async (req: Request, res: Response) => {
 // DELETE
 export const remove = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { id } = req.params;
-    await memberService.deleteMember(Number(id));
+    await memberService.deleteMember(schema, Number(id));
     res.json({ message: 'Membro removido com sucesso.' });
   } catch (error: any) {
     res.status(400).json({ error: error.message });
-  }
-};
+  }   
+}

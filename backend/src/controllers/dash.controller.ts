@@ -4,11 +4,14 @@ import * as dashService from '../services/dash.service';
 // Resumo financeiro geral (total do período)
 export const resumoFinanceiro = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { congregacaoId, ano, mes } = req.query;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
     if (!congregacaoId || !ano) {
       return res.status(400).json({ error: 'Informe congregacaoId e ano' });
     }
     const resumo = await dashService.getResumoFinanceiro(
+      schema,
       String(congregacaoId),
       String(ano),
       mes ? String(mes) : undefined
@@ -23,11 +26,14 @@ export const resumoFinanceiro = async (req: Request, res: Response) => {
 // Resumo financeiro mensal (para gráficos)
 export const resumoFinanceiroMensal = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { congregacaoId, ano } = req.query;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
     if (!congregacaoId || !ano) {
       return res.status(400).json({ error: 'Informe congregacaoId e ano' });
     }
     const dados = await dashService.getResumoFinanceiroMensal(
+      schema,
       String(congregacaoId),
       String(ano)
     );

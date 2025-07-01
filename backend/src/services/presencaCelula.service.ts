@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createPresenca = async (data: any) => {
+export const createPresenca = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.presencaCelula.create({ data });
 };
 
-export const listPresencas = async () => {
+export const listPresencas = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.presencaCelula.findMany({
     include: {
       Member: true,
@@ -14,7 +15,8 @@ export const listPresencas = async () => {
   });
 };
 
-export const getPresenca = async (id: number) => {
+export const getPresenca = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.presencaCelula.findUnique({
     where: { id },
     include: {
@@ -24,30 +26,34 @@ export const getPresenca = async (id: number) => {
   });
 };
 
-export const updatePresenca = async (id: number, data: any) => {
+export const updatePresenca = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.presencaCelula.update({
     where: { id },
     data
   });
 };
 
-export const deletePresenca = async (id: number) => {
+export const deletePresenca = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.presencaCelula.delete({
     where: { id }
   });
 };
 
-export const listarPresencasPorReuniao = async (reuniaoId: number) => {
+export const listarPresencasPorReuniao = async (schema: string, reuniaoId: number) => {
+  const prisma = getPrisma(schema);
   return prisma.presencaCelula.findMany({
     where: { reuniaoId },
     include: { Member: true }
   });
 };
 
-export const registrarOuAtualizarPresenca = async (reuniaoId: number, membroId: number, presente: boolean) => {
+export const registrarOuAtualizarPresenca = async (schema: string, reuniaoId: number, membroId: number, presente: boolean) => {
+  const prisma = getPrisma(schema);
   return prisma.presencaCelula.upsert({
     where: {
-      presenca_unica: { // Use o nome do índice único definido no Prisma
+      presenca_unica: {
         reuniaoId,
         membroId
       }

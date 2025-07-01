@@ -1,8 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-import * as dashService from './dash.service';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const getResumoFinanceiro = async (congregacaoId: string, ano: string, mes?: string) => {
+export const getResumoFinanceiro = async (
+  schema: string,
+  congregacaoId: string,
+  ano: string,
+  mes?: string
+) => {
+  const prisma = getPrisma(schema);
   const ids = String(congregacaoId).split(',').map(Number);
 
   let dataInicio: Date, dataFim: Date;
@@ -100,7 +104,12 @@ export const getResumoFinanceiro = async (congregacaoId: string, ano: string, me
   };
 };
 
-export const getResumoFinanceiroMensal = async (congregacaoId: string, ano: string) => {
+export const getResumoFinanceiroMensal = async (
+  schema: string,
+  congregacaoId: string,
+  ano: string
+) => {
+  const prisma = getPrisma(schema);
   const id = Number(congregacaoId);
   const meses = Array.from({ length: 12 }, (_, i) => i + 1);
   const dadosMensais = [];

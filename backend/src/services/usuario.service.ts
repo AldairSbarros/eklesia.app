@@ -1,69 +1,40 @@
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const listUsuarios = async () => {
-  return prisma.usuario.findMany({
-    select: { id: true, nome: true, email: true, perfil: true, congregacaoId: true, ativo: true }
+export const criarUsuario = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
+  return prisma.usuario.create({ data });
+};
+
+export const listarDizimosPorCongregacao = async (schema: string, congregacaoId?: number) => {
+  const prisma = getPrisma(schema);
+  // Se congregacaoId não for informado, retorna todos (admin)
+  if (!congregacaoId) {
+    return prisma.offering.findMany();
+  }
+  // Se informado, retorna só daquela congregação
+  return prisma.offering.findMany({
+    where: { congregacaoId }
   });
 };
 
-export const createUsuario = async (data: any) => {
-  const hashedPassword = await bcrypt.hash(data.senha, 10);
-  return prisma.usuario.create({
-    data: { ...data, senha: hashedPassword }
+export const obterUsuario = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
+  return prisma.usuario.findUnique({
+    where: { id }
   });
 };
 
-export const updateUsuario = async (id: number, data: any) => {
+export const atualizarUsuario = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.usuario.update({
     where: { id },
     data
   });
 };
 
-export const deleteUsuario = async (id: number) => {
+export const removerUsuario = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.usuario.delete({
     where: { id }
-  });
-};
-
-export const resetPassword = async (id: number, novaSenha: string) => {
-  const hashedPassword = await bcrypt.hash(novaSenha, 10);
-  return prisma.usuario.update({
-    where: { id },
-    data: { senha: hashedPassword }
-  });
-};
-
-export const changePassword = async (userId: number, senhaAtual: string, novaSenha: string) => {
-  const usuario = await prisma.usuario.findUnique({ where: { id: userId } });
-  if (!usuario) throw new Error('Usuário não encontrado');
-  const valid = await bcrypt.compare(senhaAtual, usuario.senha);
-  if (!valid) throw new Error('Senha atual incorreta');
-  const hashedPassword = await bcrypt.hash(novaSenha, 10);
-  return prisma.usuario.update({
-    where: { id: userId },
-    data: { senha: hashedPassword }
-  });
-};
-
-export const getDizimos = async (userId: number) => {
-  return prisma.offering.findMany({
-    where: { memberId: userId, type: 'dizimo' },
-    select: { id: true, value: true, date: true, receiptPhoto: true }
-  });
-};
-
-export const loginUsuario = async (email: string, senha: string) => {
-  const usuario = await prisma.usuario.findUnique({ where: { email } });
-  if (!usuario || !(await bcrypt.compare(senha, usuario.senha))) return null;
-  return usuario;
-};
-
-export const uploadComprovante = async (dizimoId: number, imageUrl: string) => {
-  return prisma.offering.update({
-    where: { id: dizimoId },
-    data: { receiptPhoto: imageUrl }
   });
 };

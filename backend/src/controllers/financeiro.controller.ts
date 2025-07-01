@@ -1,19 +1,24 @@
 import { Request, Response } from "express";
 import * as financeiroService from '../services/financeiro.service';
 
+// Resumo financeiro
 export const resumoFinanceiro = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { congregacaoId, mes, ano } = req.query;
+    if (!schema) {
+      return res.status(400).json({ error: "Schema não informado no header." });
+    }
     if (!congregacaoId) {
       return res.status(400).json({ error: "Informe o congregacaoId" });
     }
     const data = await financeiroService.getResumoFinanceiro(
+      schema,
       Number(congregacaoId),
       mes ? Number(mes) : undefined,
       ano ? Number(ano) : undefined
     );
 
-    // Aqui você pode calcular os totais e agrupamentos como antes:
     const { offerings, receitas, despesas, investimentos } = data;
 
     const totalOfferings = offerings.reduce((acc, o) => acc + o.value, 0);
@@ -51,13 +56,19 @@ export const resumoFinanceiro = async (req: Request, res: Response) => {
   }
 };
 
+// Relatório mensal
 export const relatorioMensal = async (req: Request, res: Response, next: Function) => {
   try {
+    const schema = req.headers['schema'] as string;
     const { congregacaoId, mes, ano } = req.query;
+    if (!schema) {
+      return res.status(400).json({ error: "Schema não informado no header." });
+    }
     if (!congregacaoId || !mes || !ano) {
       return res.status(400).json({ error: 'Informe congregacaoId, mes e ano' });
     }
     const relatorio = await financeiroService.getRelatorioMensal(
+      schema,
       Number(congregacaoId),
       Number(mes),
       Number(ano)

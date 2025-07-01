@@ -4,7 +4,9 @@ import * as arquivoService from '../services/arquivo.service';
 // Criar arquivo
 export const create = async (req: Request, res: Response) => {
   try {
-    const arquivo = await arquivoService.createArquivo(req.body);
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+    const arquivo = await arquivoService.createArquivo(schema, req.body);
     res.status(201).json(arquivo);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -14,7 +16,9 @@ export const create = async (req: Request, res: Response) => {
 // Listar arquivos
 export const list = async (req: Request, res: Response) => {
   try {
-    const arquivos = await arquivoService.listArquivos();
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+    const arquivos = await arquivoService.listArquivos(schema);
     res.json(arquivos);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -24,8 +28,10 @@ export const list = async (req: Request, res: Response) => {
 // Obter arquivo por ID
 export const get = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
     const { id } = req.params;
-    const arquivo = await arquivoService.getArquivo(Number(id));
+    const arquivo = await arquivoService.getArquivo(schema, Number(id));
     if (!arquivo) return res.status(404).json({ error: 'Arquivo não encontrado.' });
     res.json(arquivo);
   } catch (error: any) {
@@ -36,8 +42,10 @@ export const get = async (req: Request, res: Response) => {
 // Atualizar arquivo
 export const update = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
     const { id } = req.params;
-    const arquivo = await arquivoService.updateArquivo(Number(id), req.body);
+    const arquivo = await arquivoService.updateArquivo(schema, Number(id), req.body);
     res.json(arquivo);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -47,10 +55,12 @@ export const update = async (req: Request, res: Response) => {
 // Remover arquivo
 export const remove = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
     const { id } = req.params;
-    await arquivoService.deleteArquivo(Number(id));
+    await arquivoService.deleteArquivo(schema, Number(id));
     res.json({ message: 'Arquivo removido com sucesso.' });
   } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
-};
+        res.status(400).json({ error: error.message });   
+      }
+    };

@@ -1,10 +1,13 @@
 import request from "supertest";
 import app from "../app"; // ajuste o caminho conforme seu projeto
 
-describe("Auth Controller", () => {
+const SCHEMA = "cliente_teste"; // use o nome do schema de teste desejado
+
+describe("Auth Controller (multi-tenant)", () => {
   it("deve cadastrar um novo usuário", async () => {
     const res = await request(app)
       .post("/api/auth/register")
+      .set("schema", SCHEMA)
       .send({
         nome: "Usuário Teste",
         email: `teste${Date.now()}@teste.com`,
@@ -20,6 +23,7 @@ describe("Auth Controller", () => {
     const email = `login${Date.now()}@teste.com`;
     await request(app)
       .post("/api/auth/register")
+      .set("schema", SCHEMA)
       .send({
         nome: "Login Teste",
         email,
@@ -30,6 +34,7 @@ describe("Auth Controller", () => {
     // Agora, faça login
     const res = await request(app)
       .post("/api/auth/login")
+      .set("schema", SCHEMA)
       .send({ email, senha: "123456" });
 
     expect(res.status).toBe(200);

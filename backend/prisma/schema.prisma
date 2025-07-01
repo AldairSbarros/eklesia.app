@@ -99,10 +99,10 @@ model EscolaLideresTurma {
   congregacaoId  Int
   Congregacao    Congregacao @relation(fields: [congregacaoId], references: [id])
   alunos         Member[]  @relation("TurmaAlunos")
-  etapas         EscolaLideresEtapa[]
+  etapas         EscolaLideresModulo[]
 }
 
-model EscolaLideresEtapa {
+model EscolaLideresModulo {
   id             Int      @id @default(autoincrement())
   nome           String
   turmaId        Int
@@ -114,7 +114,7 @@ model EscolaLideresLicao {
   id             Int      @id @default(autoincrement())
   nome           String
   etapaId        Int
-  EscolaLideresEtapa EscolaLideresEtapa @relation(fields: [etapaId], references: [id])
+  EscolaLideresEtapa EscolaLideresModulo @relation(fields: [etapaId], references: [id])
 }
 
 // Encontros/Retiros
@@ -171,6 +171,8 @@ enum PerfilUsuario {
   ADMIN
   Dirigente
   Tesoureiro
+  Secretario
+  Pastor
 }
 model Usuario {
   id              Int          @id @default(autoincrement())

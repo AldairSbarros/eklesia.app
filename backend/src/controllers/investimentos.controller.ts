@@ -5,6 +5,9 @@ import manualCodigos from '../utils/manualCodigos.json';
 // CREATE
 export const criarInvestimento = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     let { congregacaoId, descricao, valor, data, categoria, codigoManual } = req.body;
 
     if (codigoManual && !descricao) {
@@ -20,7 +23,7 @@ export const criarInvestimento = async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'Código ou descrição de investimento inválidos.' });
     }
 
-    const investimento = await investimentosService.criarInvestimento({
+    const investimento = await investimentosService.criarInvestimento(schema, {
       congregacaoId: Number(congregacaoId),
       descricao,
       valor: Number(valor),
@@ -38,7 +41,10 @@ export const criarInvestimento = async (req: Request, res: Response) => {
 // READ ALL
 export const listarInvestimentos = async (req: Request, res: Response) => {
   try {
-    const investimentos = await investimentosService.listarInvestimentos();
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
+    const investimentos = await investimentosService.listarInvestimentos(schema);
     res.json(investimentos);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -48,8 +54,11 @@ export const listarInvestimentos = async (req: Request, res: Response) => {
 // READ ONE
 export const obterInvestimento = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    const investimento = await investimentosService.obterInvestimento(Number(id));
+    const investimento = await investimentosService.obterInvestimento(schema, Number(id));
     if (!investimento) return res.status(404).json({ error: 'Investimento não encontrado' });
     res.json(investimento);
   } catch (error: any) {
@@ -60,8 +69,11 @@ export const obterInvestimento = async (req: Request, res: Response) => {
 // UPDATE
 export const atualizarInvestimento = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    const investimento = await investimentosService.atualizarInvestimento(Number(id), req.body);
+    const investimento = await investimentosService.atualizarInvestimento(schema, Number(id), req.body);
     res.json(investimento);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -71,8 +83,11 @@ export const atualizarInvestimento = async (req: Request, res: Response) => {
 // DELETE
 export const removerInvestimento = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    await investimentosService.removerInvestimento(Number(id));
+    await investimentosService.removerInvestimento(schema, Number(id));
     res.json({ message: 'Investimento removido com sucesso' });
   } catch (error: any) {
     res.status(400).json({ error: error.message });

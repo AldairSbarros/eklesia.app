@@ -1,56 +1,44 @@
-import { Request, Response } from 'express';
-import * as ministerioService from '../services/ministerio.service';
+import { getPrisma } from "../utils/prismaDynamic";
 
-// Criar ministério
-export const create = async (req: Request, res: Response) => {
-  try {
-    const ministerio = await ministerioService.createMinisterio(req.body);
-    res.status(201).json(ministerio);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
+export const createMinisterio = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
+  return prisma.ministerio.create({ data });
 };
 
-// Listar ministérios
-export const list = async (req: Request, res: Response) => {
-  try {
-    const ministerios = await ministerioService.listMinisterios();
-    res.json(ministerios);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
+export const listMinisterios = async (schema: string) => {
+  const prisma = getPrisma(schema);
+  return prisma.ministerio.findMany({
+    include: {
+      Congregacao: true,
+      Lider: true,
+      membros: true
+    }
+  });
 };
 
-// Obter ministério por ID
-export const get = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const ministerio = await ministerioService.getMinisterio(Number(id));
-    if (!ministerio) return res.status(404).json({ error: 'Ministério não encontrado.' });
-    res.json(ministerio);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
+export const getMinisterio = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
+  return prisma.ministerio.findUnique({
+    where: { id },
+    include: {
+      Congregacao: true,
+      Lider: true,
+      membros: true
+    }
+  });
 };
 
-// Atualizar ministério
-export const update = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    const ministerio = await ministerioService.updateMinisterio(Number(id), req.body);
-    res.json(ministerio);
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
+export const updateMinisterio = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
+  return prisma.ministerio.update({
+    where: { id },
+    data
+  });
 };
 
-// Remover ministério
-export const remove = async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    await ministerioService.deleteMinisterio(Number(id));
-    res.json({ message: 'Ministério removido com sucesso.' });
-  } catch (error: any) {
-    res.status(400).json({ error: error.message });
-  }
+export const deleteMinisterio = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
+  return prisma.ministerio.delete({
+    where: { id }
+  });
 };

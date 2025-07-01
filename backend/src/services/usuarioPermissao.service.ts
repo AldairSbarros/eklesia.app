@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createUsuarioPermissao = async (data: any) => {
+export const createUsuarioPermissao = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.usuarioPermissao.create({ data });
 };
 
-export const listUsuarioPermissoes = async () => {
+export const listUsuarioPermissoes = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.usuarioPermissao.findMany({
     include: {
       Usuario: true,
@@ -14,7 +15,8 @@ export const listUsuarioPermissoes = async () => {
   });
 };
 
-export const getUsuarioPermissao = async (id: number) => {
+export const getUsuarioPermissao = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.usuarioPermissao.findUnique({
     where: { id },
     include: {
@@ -24,14 +26,16 @@ export const getUsuarioPermissao = async (id: number) => {
   });
 };
 
-export const updateUsuarioPermissao = async (id: number, data: any) => {
+export const updateUsuarioPermissao = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.usuarioPermissao.update({
     where: { id },
     data
   });
 };
 
-export const deleteUsuarioPermissao = async (id: number) => {
+export const deleteUsuarioPermissao = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.usuarioPermissao.delete({
     where: { id }
   });

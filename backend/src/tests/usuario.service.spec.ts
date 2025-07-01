@@ -1,17 +1,18 @@
-import { createUsuario } from '../services/usuario.service'; // Ajuste o caminho conforme necessário
+import { criarUsuario } from '../services/usuario.service';
+import { getPrisma } from '../utils/prismaDynamic';
 
-import { PrismaClient } from '@prisma/client';
+const SCHEMA = 'cliente_teste'; // Defina o schema de teste
 
-const prisma = new PrismaClient();
+describe('Usuario Service (multi-tenant)', () => {
+  const prisma = getPrisma(SCHEMA);
 
-describe('Usuario Service', () => {
   afterAll(async () => {
     await prisma.usuario.deleteMany({ where: { email: 'teste@teste.com' } });
     await prisma.$disconnect();
   });
 
   it('deve criar um usuário', async () => {
-    const usuario = await createUsuario({
+    const usuario = await criarUsuario(SCHEMA, {
       nome: 'Teste',
       email: 'teste@teste.com',
       senha: '123456',

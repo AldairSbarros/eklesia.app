@@ -3,6 +3,8 @@ import express from 'express';
 import * as financeiroService from '../services/financeiro.service';
 import { relatorioMensal } from '../controllers/financeiro.controller';
 jest.mock('../services/financeiro.service');
+
+const SCHEMA = 'cliente_teste';
 const app = express();
 app.use(express.json());
 app.get('/relatorio-mensal', async (req, res, next) => {
@@ -13,10 +15,7 @@ app.get('/relatorio-mensal', async (req, res, next) => {
   }
 });
 
-// Mock do service
-
-
-describe('relatorioMensal Controller', () => {
+describe('relatorioMensal Controller (multi-tenant)', () => {
   it('deve retornar relatorio mensal com sucesso', async () => {
     // Arrange: mocka o retorno do service
     (financeiroService.getRelatorioMensal as jest.Mock).mockResolvedValue({
@@ -37,7 +36,9 @@ describe('relatorioMensal Controller', () => {
     });
 
     // Act
-    const res = await request(app).get('/relatorio-mensal?congregacaoId=1&mes=6&ano=2025');
+    const res = await request(app)
+      .get('/relatorio-mensal?congregacaoId=1&mes=6&ano=2025')
+      .set('schema', SCHEMA);
 
     // Assert
     expect(res.status).toBe(200);
@@ -47,7 +48,9 @@ describe('relatorioMensal Controller', () => {
   });
 
   it('deve retornar erro se faltar parâmetros', async () => {
-    const res = await request(app).get('/relatorio-mensal?congregacaoId=1&mes=6');
+    const res = await request(app)
+      .get('/relatorio-mensal?congregacaoId=1&mes=6')
+      .set('schema', SCHEMA);
     expect(res.status).toBe(400);
     expect(res.body).toHaveProperty('error');
   });
@@ -56,7 +59,7 @@ describe('relatorioMensal Controller', () => {
 describe('financeiroService.getResumoFinanceiro', () => {
   it('deve retornar objetos com arrays de dados', async () => {
     // Use um congregacaoId real do seu banco de testes ou mock do Prisma
-    const result = await financeiroService.getResumoFinanceiro(1, 6, 2025);
+    const result = await financeiroService.getResumoFinanceiro(SCHEMA, 1, 6, 2025);
     expect(result).toHaveProperty('offerings');
     expect(result).toHaveProperty('receitas');
     expect(result).toHaveProperty('despesas');
@@ -68,7 +71,7 @@ describe('financeiroService.getResumoFinanceiro', () => {
 describe('financeiroService.getRelatorioMensal', () => {
   it('deve retornar o relatório mensal com totais calculados', async () => {
     // Use um congregacaoId real do seu banco de testes ou mock do Prisma
-    const result = await financeiroService.getRelatorioMensal(1, 6, 2025);
+    const result = await financeiroService.getRelatorioMensal(SCHEMA, 1, 6, 2025);
     expect(result).toHaveProperty('totalDizimos');
     expect(result).toHaveProperty('totalOfertas');
     expect(result).toHaveProperty('comissaoIgreja');

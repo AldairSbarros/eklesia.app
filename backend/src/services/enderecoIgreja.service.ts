@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createEnderecoIgreja = async (data: any) => {
+export const createEnderecoIgreja = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.enderecoIgreja.create({ data });
 };
 
-export const listEnderecosIgreja = async () => {
+export const listEnderecosIgreja = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.enderecoIgreja.findMany({
     include: {
       igrejas: true
@@ -13,7 +14,8 @@ export const listEnderecosIgreja = async () => {
   });
 };
 
-export const getEnderecoIgreja = async (id: number) => {
+export const getEnderecoIgreja = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.enderecoIgreja.findUnique({
     where: { id },
     include: {
@@ -22,14 +24,16 @@ export const getEnderecoIgreja = async (id: number) => {
   });
 };
 
-export const updateEnderecoIgreja = async (id: number, data: any) => {
+export const updateEnderecoIgreja = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.enderecoIgreja.update({
     where: { id },
     data
   });
 };
 
-export const deleteEnderecoIgreja = async (id: number) => {
+export const deleteEnderecoIgreja = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.enderecoIgreja.delete({
     where: { id }
   });

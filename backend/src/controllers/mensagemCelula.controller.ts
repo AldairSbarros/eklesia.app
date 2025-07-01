@@ -7,7 +7,10 @@ import pdfParse from 'pdf-parse';
 // CRUD no banco
 export const criarMensagem = async (req: Request, res: Response) => {
   try {
-    const mensagem = await mensagemCelulaService.criarMensagem(req.body);
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
+    const mensagem = await mensagemCelulaService.criarMensagem(schema, req.body);
     res.status(201).json(mensagem);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -16,7 +19,10 @@ export const criarMensagem = async (req: Request, res: Response) => {
 
 export const listarMensagens = async (req: Request, res: Response) => {
   try {
-    const mensagens = await mensagemCelulaService.listarMensagens();
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
+    const mensagens = await mensagemCelulaService.listarMensagens(schema);
     res.json(mensagens);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -25,8 +31,11 @@ export const listarMensagens = async (req: Request, res: Response) => {
 
 export const obterMensagem = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    const mensagem = await mensagemCelulaService.obterMensagem(Number(id));
+    const mensagem = await mensagemCelulaService.obterMensagem(schema, Number(id));
     if (!mensagem) return res.status(404).json({ error: 'Mensagem não encontrada.' });
     res.json(mensagem);
   } catch (error: any) {
@@ -36,8 +45,11 @@ export const obterMensagem = async (req: Request, res: Response) => {
 
 export const atualizarMensagem = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    const mensagem = await mensagemCelulaService.atualizarMensagem(Number(id), req.body);
+    const mensagem = await mensagemCelulaService.atualizarMensagem(schema, Number(id), req.body);
     res.json(mensagem);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -46,8 +58,11 @@ export const atualizarMensagem = async (req: Request, res: Response) => {
 
 export const removerMensagem = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    await mensagemCelulaService.removerMensagem(Number(id));
+    await mensagemCelulaService.removerMensagem(schema, Number(id));
     res.json({ message: 'Mensagem removida com sucesso.' });
   } catch (error: any) {
     res.status(500).json({ error: error.message });

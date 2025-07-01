@@ -1,11 +1,12 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
-export const createEncontro = async (data: any) => {
+export const createEncontro = async (schema: string, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.encontro.create({ data });
 };
 
-export const listEncontros = async () => {
+export const listEncontros = async (schema: string) => {
+  const prisma = getPrisma(schema);
   return prisma.encontro.findMany({
     include: {
       Congregacao: true,
@@ -14,7 +15,8 @@ export const listEncontros = async () => {
   });
 };
 
-export const getEncontro = async (id: number) => {
+export const getEncontro = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.encontro.findUnique({
     where: { id },
     include: {
@@ -24,14 +26,16 @@ export const getEncontro = async (id: number) => {
   });
 };
 
-export const updateEncontro = async (id: number, data: any) => {
+export const updateEncontro = async (schema: string, id: number, data: any) => {
+  const prisma = getPrisma(schema);
   return prisma.encontro.update({
     where: { id },
     data
   });
 };
 
-export const deleteEncontro = async (id: number) => {
+export const deleteEncontro = async (schema: string, id: number) => {
+  const prisma = getPrisma(schema);
   return prisma.encontro.delete({
     where: { id }
   });

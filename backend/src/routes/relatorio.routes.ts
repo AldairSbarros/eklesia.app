@@ -1,9 +1,18 @@
-import { Router } from 'express';
-import * as relatorioController from '../controllers/relatorio.controller';
+// import { Router, Request, Response, NextFunction } from 'express';
+// import * as relatorioController from '../controllers/relatorio.controller';
 
-const router = Router();
+// const router = Router();
 
-router.get('/mensal', relatorioController.relatorioMensal);
-router.get('/mensal/pdf', relatorioController.relatorioMensalPDF);
+// // Handler para funções async
+// function asyncHandler(
+//   fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+// ) {
+//   return (req: Request, res: Response, next: NextFunction) => {
+//     Promise.resolve(fn(req, res, next)).catch(next);
+//   };
+// }
 
-export default router;
+// router.get('/mensal', asyncHandler(relatorioController.relatorioMensal));
+// router.get('/mensal/pdf', asyncHandler(relatorioController.relatorioMensalPDF));
+
+// export default  router;

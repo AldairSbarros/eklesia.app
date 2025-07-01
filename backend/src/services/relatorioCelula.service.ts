@@ -1,15 +1,16 @@
-import { PrismaClient } from '@prisma/client';
-const prisma = new PrismaClient();
+import { getPrisma } from "../utils/prismaDynamic";
 
 // 1. Lista de membros da célula
-export const membrosDaCelula = async (celulaId: number) => {
+export const membrosDaCelula = async (schema: string, celulaId: number) => {
+  const prisma = getPrisma(schema);
   return prisma.member.findMany({
     where: { celulaId }
   });
 };
 
 // 2. Presenças por reunião
-export const presencasPorReuniao = async (celulaId: number) => {
+export const presencasPorReuniao = async (schema: string, celulaId: number) => {
+  const prisma = getPrisma(schema);
   return prisma.reuniaoCelula.findMany({
     where: { celulaId },
     include: {
@@ -19,7 +20,8 @@ export const presencasPorReuniao = async (celulaId: number) => {
 };
 
 // 3. Média de presença dos membros no mês
-export const mediaPresencaNoMes = async (celulaId: number, mes: number, ano: number) => {
+export const mediaPresencaNoMes = async (schema: string, celulaId: number, mes: number, ano: number) => {
+  const prisma = getPrisma(schema);
   const reunioes = await prisma.reuniaoCelula.findMany({
     where: {
       celulaId,
@@ -41,7 +43,8 @@ export const mediaPresencaNoMes = async (celulaId: number, mes: number, ano: num
 };
 
 // 4. Ranking dos mais presentes/faltosos no mês
-export const rankingPresenca = async (celulaId: number, mes: number, ano: number) => {
+export const rankingPresenca = async (schema: string, celulaId: number, mes: number, ano: number) => {
+  const prisma = getPrisma(schema);
   const reunioes = await prisma.reuniaoCelula.findMany({
     where: {
       celulaId,
@@ -64,7 +67,8 @@ export const rankingPresenca = async (celulaId: number, mes: number, ano: number
 };
 
 // 5. Aniversariantes do mês
-export const aniversariantesDoMes = async (celulaId: number, mes: number) => {
+export const aniversariantesDoMes = async (schema: string, celulaId: number, mes: number) => {
+  const prisma = getPrisma(schema);
   const membros = await prisma.member.findMany({
     where: { celulaId },
     select: {

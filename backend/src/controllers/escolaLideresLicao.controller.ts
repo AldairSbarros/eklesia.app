@@ -1,21 +1,13 @@
 import { Request, Response } from 'express';
-// Update the import path if the service file is located elsewhere, for example:
 import * as licaoService from '../services/escolaLideresLicao.service';
-// If the file does not exist, create 'src/services/licaoService.ts' with the following content:
-
-// Example licaoService implementation (create this file if missing)
-export default {
-  async createLicao(data: any) { /* ... */ },
-  async listLicoes() { /* ... */ },
-  async getLicao(id: number) { /* ... */ },
-  async updateLicao(id: number, data: any) { /* ... */ },
-  async deleteLicao(id: number) { /* ... */ }
-};
 
 // Criar lição
 export const create = async (req: Request, res: Response) => {
   try {
-    const licao = await licaoService.createLicao(req.body);
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
+    const licao = await licaoService.createLicao(schema, req.body);
     res.status(201).json(licao);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -25,7 +17,10 @@ export const create = async (req: Request, res: Response) => {
 // Listar lições
 export const list = async (req: Request, res: Response) => {
   try {
-    const licoes = await licaoService.listLicoes();
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
+    const licoes = await licaoService.listLicoes(schema);
     res.json(licoes);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -35,8 +30,11 @@ export const list = async (req: Request, res: Response) => {
 // Obter lição por ID
 export const get = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    const licao = await licaoService.getLicao(Number(id));
+    const licao = await licaoService.getLicao(schema, Number(id));
     if (!licao) return res.status(404).json({ error: 'Lição não encontrada.' });
     res.json(licao);
   } catch (error: any) {
@@ -47,8 +45,11 @@ export const get = async (req: Request, res: Response) => {
 // Atualizar lição
 export const update = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    const licao = await licaoService.updateLicao(Number(id), req.body);
+    const licao = await licaoService.updateLicao(schema, Number(id), req.body);
     res.json(licao);
   } catch (error: any) {
     res.status(400).json({ error: error.message });
@@ -58,8 +59,11 @@ export const update = async (req: Request, res: Response) => {
 // Remover lição
 export const remove = async (req: Request, res: Response) => {
   try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+
     const { id } = req.params;
-    await licaoService.deleteLicao(Number(id));
+    await licaoService.deleteLicao(schema, Number(id));
     res.json({ message: 'Lição removida com sucesso.' });
   } catch (error: any) {
     res.status(400).json({ error: error.message });

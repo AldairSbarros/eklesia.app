@@ -1,33 +1,27 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response, NextFunction } from 'express';
 import * as celulaController from '../controllers/celula.controller';
 
 const router = Router();
 
-router.post('/', (req: Request, res: Response) => celulaController.create(req, res));
-router.get('/', (req: Request, res: Response) => celulaController.list(req, res));
-router.get('/:id', async (req: Request, res: Response) => {
-	try {
-		await celulaController.get(req, res);
-	} catch (error) {
-		res.status(500).json({ error: 'Internal server error' });
-	}
-});
-router.put('/:id', (req: Request, res: Response) => celulaController.update(req, res));
-router.delete('/:id', (req: Request, res: Response) => celulaController.remove(req, res));
+// Handler para funções async
+function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
 
-router.post('/:id/membros', async (req, res) => {
-  // Adiciona membro à célula
-});
-router.delete('/:id/membros/:membroId', async (req, res) => {
-  // Remove membro da célula
-});
-// Adicionar membro à célula
-router.post('/:id/membros', celulaController.addMembro);
+// CRUD de célula
+router.post('/', asyncHandler(celulaController.create));
+router.get('/', asyncHandler(celulaController.list));
+router.get('/:id', asyncHandler(celulaController.get));
+router.put('/:id', asyncHandler(celulaController.update));
+router.delete('/:id', asyncHandler(celulaController.remove));
 
-// Remover membro da célula
-router.delete('/:id/membros/:membroId', celulaController.removeMembro);
-
-// Listar membros da célula
-router.get('/:id/membros', celulaController.listarMembros);
+// Membros da célula
+router.post('/:id/membros', asyncHandler(celulaController.addMembro));
+router.delete('/:id/membros/:membroId', asyncHandler(celulaController.removeMembro));
+router.get('/:id/membros', celulaController.listarMembros as (req: Request, res: Response, next: NextFunction) => any);
 
 export default router;

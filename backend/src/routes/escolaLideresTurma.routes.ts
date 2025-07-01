@@ -1,12 +1,22 @@
-import { Router } from 'express';
-import * as turmaController from '../controllers/escolaLideresTurma.controller';
+import { Router, Request, Response, NextFunction } from 'express';
+import * as escolaLideresTurmaController from '../controllers/escolaLideresTurma.controller';
 
 const router = Router();
 
-router.post('/', turmaController.create);
-router.get('/', turmaController.list);
-// router.get('/:id', turmaController.get);
-router.put('/:id', turmaController.update);
-router.delete('/:id', turmaController.remove);
+// Handler para funções async
+function asyncHandler(
+  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
+) {
+  return (req: Request, res: Response, next: NextFunction) => {
+    Promise.resolve(fn(req, res, next)).catch(next);
+  };
+}
+
+// CRUD de turmas da escola de líderes
+router.post('/', asyncHandler(escolaLideresTurmaController.create));
+router.get('/', asyncHandler(escolaLideresTurmaController.list));
+router.get('/:id', asyncHandler(escolaLideresTurmaController.get));
+router.put('/:id', asyncHandler(escolaLideresTurmaController.update));
+router.delete('/:id', asyncHandler(escolaLideresTurmaController.remove));
 
 export default router;
