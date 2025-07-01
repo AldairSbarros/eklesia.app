@@ -1,15 +1,34 @@
-import request from "supertest";
-import app from "../app";
+// church.controller.spec.ts
+import request from 'supertest';
+import app from '../app';
 
-const SCHEMA = 'cliente_teste'; // Defina o schema de teste
+const SCHEMA = 'igreja_1751327431755';
+let token: string;
 
-describe("Church Controller (multi-tenant)", () => {
-  it("deve retornar erro 400 se nome não for informado", async () => {
+beforeAll(async () => {
+  // Faça login e pegue o token de admin
+  const res = await request(app)
+    .post('/api/auth/login')
+    .set('schema', SCHEMA)
+    .send({ email: 'aldairbarros@eklesia.app.br', senha: 'Alsib@2025' });
+  token = res.body.token;
+});
+
+describe('Church Controller', () => {
+  it('deve criar uma igreja', async () => {
     const res = await request(app)
-      .post("/api/igrejas")
-      .set("schema", SCHEMA)
-      .send({ email: "teste@teste.com" });
-    expect(res.status).toBe(400);
-    expect(res.body.error).toBeDefined();
+      .post('/api/igrejas')
+      .set('Authorization', `Bearer ${token}`)
+      .send({ nome: 'Igreja Teste', email: `igreja${Date.now()}@teste.com` });
+    expect(res.status).toBe(201);
+    expect(res.body.igreja).toHaveProperty('id');
+  });
+
+  it('deve listar igrejas', async () => {
+    const res = await request(app)
+      .get('/api/igrejas')
+      .set('Authorization', `Bearer ${token}`);
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
   });
 });

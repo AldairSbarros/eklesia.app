@@ -6,24 +6,34 @@ import path from 'path';
 // CREATE
 export const create = async (req: Request, res: Response): Promise<void> => {
   try {
+    console.log('BODY RECEBIDO:', req.body)
     const schema = req.headers['schema'] as string;
     if (!schema) {
       res.status(400).json({ error: 'Schema não informado no header.' });
       return;
     }
-    const { congregacaoNome, memberNome, type, value, date, service, receiptPhoto, numeroRecibo } = req.body;
+    // Aceita os campos do seu teste
+    const { valor, data, memberId, type, service, receiptPhoto, numeroRecibo, congregacaoId } = req.body;
 
-    // Checagem para métodos não implementados
-    try {
-      await offeringService.findCongregacaoByNome(schema, congregacaoNome);
-      await offeringService.findMemberByNome(schema, memberNome, 0);
-    } catch (err: any) {
-      res.status(501).json({ error: 'Busca por congregação ou membro por nome não implementada.' });
-      return;
-    }
+    // Validação básica
+    if (!valor || !data || !memberId || !congregacaoId) {
+  res.status(400).json({ error: 'Campos obrigatórios não informados.' });
+  return;
+}
 
-    // O restante do código depende da implementação dos métodos acima
-    res.status(501).json({ error: 'Funcionalidade não implementada.' });
+    // Criação da oferta/dízimo
+    const offering = await offeringService.createOffering(schema, {
+  value: valor,
+  date: new Date(data),
+  memberId: memberId,
+  type: type || "dizimo",
+  service: service || null,
+  receiptPhoto: receiptPhoto || null,
+  numeroRecibo: numeroRecibo || null,
+  congregacaoId: congregacaoId // <-- Adicione aqui!
+});
+
+    res.status(201).json(offering);
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }

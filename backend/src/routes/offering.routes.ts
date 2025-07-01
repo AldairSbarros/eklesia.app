@@ -8,10 +8,17 @@ import path from "path";
 import fs from "fs";
 
 const prisma = new PrismaClient();
-
 const router = Router();
 
-// Removed duplicate POST '/:id/upload-comprovante' route to fix overload error
+// Rota principal para criar oferta/dízimo
+router.post(
+  "/",
+  autenticarJWT,
+  autorizarRoles(["admin", "tesoureiro"]),
+  offeringController.create
+);
+
+// Rotas REST padrão
 router.get("/", offeringController.list);
 router.get("/:id", offeringController.get);
 router.put("/:id", offeringController.update);
@@ -20,6 +27,8 @@ router.delete("/:id", offeringController.remove);
 router.put("/:id/receipt-photo", offeringController.updateReceiptPhoto);
 router.delete("/:id/receipt-photo", offeringController.deleteReceiptPhoto);
 router.get("/comprovantes/list", offeringController.listReceipts);
+
+// Rotas customizadas para comprovante
 router.post(
   "/:id/upload-comprovante",
   autenticarJWT,

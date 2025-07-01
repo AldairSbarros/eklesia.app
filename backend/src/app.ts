@@ -1,4 +1,7 @@
 /// <reference path="./@types/express/index.d.ts" />
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import path from 'path';
@@ -39,10 +42,14 @@ import faturaRoutes from './routes/fatura.routes';
 import sermaoRoutes from './routes/sermao.routes';
 import passwordRoutes from './routes/password.routes';
 import financeiroRoutes from './routes/financeiro.routes';
+import devUserRoutes from './routes/devuser.routes';
 // Remova o import do controller de configEmail
+
 
 const app = express();
 
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
@@ -97,6 +104,9 @@ app.use('/api/encontros', encontroRoutes);
 
 // Rotas de senha
 app.use('/api/password', passwordRoutes);
+
+// Rota Super Admin
+app.use('/api', devUserRoutes); // ou o prefixo que você usa para suas
 
 // Rotas para arquivos estáticos
 app.use('/uploads', express.static('uploads'));

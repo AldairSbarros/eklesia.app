@@ -21,7 +21,7 @@ router.post('/login', asyncHandler(usuarioController.login));
 router.get(
   '/dizimos',
   autenticarJWT,
-  autorizarRoles(['admin', 'tesoureiro', 'dirigente']),
+  autorizarRoles(['ADMIN', 'Tesoureiro', 'Dirigente']),
   asyncHandler(usuarioController.listDizimosCongregacao)
 );
 
@@ -29,7 +29,7 @@ router.get(
 router.get(
   '/',
   autenticarJWT,
-  autorizarRoles(['admin']),
+  autorizarRoles(['ADMIN']),
   asyncHandler(usuarioController.list)
 );
 
@@ -37,7 +37,7 @@ router.get(
 router.post(
   '/',
   autenticarJWT,
-  autorizarRoles(['admin']),
+  autorizarRoles(['ADMIN']),
   asyncHandler(usuarioController.create)
 );
 
@@ -45,7 +45,7 @@ router.post(
 router.put(
   '/:id',
   autenticarJWT,
-  autorizarRoles(['admin']),
+  autorizarRoles(['ADMIN']),
   asyncHandler(usuarioController.update)
 );
 
@@ -53,7 +53,7 @@ router.put(
 router.delete(
   '/:id',
   autenticarJWT,
-  autorizarRoles(['admin']),
+  autorizarRoles(['ADMIN']),
   asyncHandler(usuarioController.deleteUsuario)
 );
 
@@ -61,7 +61,7 @@ router.delete(
 router.get(
   '/:id',
   autenticarJWT,
-  autorizarRoles(['admin']),
+  autorizarRoles(['ADMIN']),
   asyncHandler(usuarioController.get)
 );
 

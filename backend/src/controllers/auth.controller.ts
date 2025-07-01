@@ -2,8 +2,26 @@ import { Request, Response } from 'express';
 import * as authService from '../services/auth.service';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 const secret = process.env.JWT_SECRET || "seuSegredoSuperSecreto";
+
+// 1. Tenta autenticar como DevUser (superusuário global)
+export const tryDevUserAuth = async (email: string, senha: string, res: Response) => {
+  const devUser = await prisma.devUser.findUnique({ where: { email } });
+  if (devUser && await bcrypt.compare(senha, devUser.senha)) {
+    const token = jwt.sign(
+      { id: devUser.id, superuser: true, perfil: devUser.perfil },
+      process.env.JWT_SECRET!,
+      { expiresIn: '1d' }
+    );
+    return res.json({ token, perfil: 'SUPERUSER', nome: devUser.nome });
+  }
+  return null;
+};
+
 
 // Cadastro
 export const register = async (req: Request, res: Response) => {
@@ -45,6 +63,12 @@ export const login = async (req: Request, res: Response) => {
     if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
 
     const { email, senha } = req.body;
+
+    // 1. Tenta autenticar como DevUser (superusuário global)
+    const devUserResult = await tryDevUserAuth(email, senha, res);
+    if (devUserResult) return; // Se autenticou como DevUser, já respondeu
+
+    // 2. Fluxo normal para usuários comuns
     const usuario = await authService.findUsuarioByEmail(schema, email);
     if (!usuario) {
       res.status(401).json({ error: 'Usuário ou senha inválidos.' });

@@ -30,17 +30,24 @@ export const create = async (req: Request, res: Response) => {
     const { nome, email, senha, perfil, congregacaoId, token } = req.body;
 
     // Verificação de token para perfis especiais
-    if (perfil === 'admin' && token !== process.env.TOKEN_ADMIN) {
+    if (perfil === 'ADMIN' && token !== process.env.TOKEN_ADMIN) {
       return res.status(403).json({ error: 'Token de autorização inválido para admin.' });
     }
-    if (perfil === 'dirigente' && token !== process.env.TOKEN_PASTOR) {
+    if (perfil === 'Dirigente' && token !== process.env.TOKEN_PASTOR) {
       return res.status(403).json({ error: 'Token de autorização inválido para dirigente.' });
     }
-    if (perfil === 'tesoureiro' && token !== process.env.TOKEN_TESOUREIRO) {
+    if (perfil === 'Tesoureiro' && token !== process.env.TOKEN_TESOUREIRO) {
       return res.status(403).json({ error: 'Token de autorização inválido para tesoureiro.' });
     }
+     if (perfil === 'Secretario' && token !== process.env.TOKEN_SECRETARIO) {
+      return res.status(403).json({ error: 'Token de autorização inválido para secretario.' });
+    }
+    // >>>>>>>>>>>> HASH DA SENHA <<<<<<<<<<<<
+    const senhaHash = await bcrypt.hash(senha, 10);
 
-    const usuario = await usuarioService.criarUsuario(schema, { nome, email, senha, perfil, congregacaoId });
+    
+
+    const usuario = await usuarioService.criarUsuario(schema, { nome, email, senha: senhaHash, perfil, congregacaoId });
     res.status(201).json({ id: usuario.id, nome: usuario.nome, email: usuario.email, perfil: usuario.perfil });
   } catch (error: any) {
     res.status(400).json({ error: error.message });

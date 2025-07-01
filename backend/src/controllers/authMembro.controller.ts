@@ -5,6 +5,16 @@ import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'seusegredoaqui';
 
+interface Membro {
+  id: number;
+  nome: string;
+  email: string;
+  senha: string;
+  password?: string;
+  congregacaoId: number;
+  [key: string]: any;
+}
+
 export const loginMembro = async (req: Request, res: Response) => {
   try {
     const schema = req.headers['schema'] as string;
@@ -13,13 +23,13 @@ export const loginMembro = async (req: Request, res: Response) => {
     const { email, senha } = req.body;
 
     // Use o service para buscar o membro pelo schema
-    const membro = await memberService.findMemberByEmail(schema, email);
+    const membro = await memberService.findMemberByEmail(schema, email) as unknown as Membro | null;
 
-    if (!membro) {
+    if (membro == null || !('senha' in membro)) {
       return res.status(401).json({ error: 'E-mail ou senha inválidos.' });
     }
 
-    const senhaCorreta = membro.senha && membro.senha.startsWith('$2a')
+    const senhaCorreta = membro.password && membro.senha.startsWith('$2a')
       ? await bcrypt.compare(senha, membro.senha)
       : senha === membro.senha;
 

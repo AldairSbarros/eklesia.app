@@ -67,3 +67,7 @@ export const deleteMember = async (schema: string, id: number) => {
     where: { id }
   });
 };
+
+export function findMemberByEmail(schema: string, email: any) {
+  throw new Error('Function not implemented.');
+}
