@@ -435,3 +435,12 @@ model ConfigEmail {
   smtpPass  String
   email     String // E-mail principal do cliente
 }
+
+model Auditoria {
+  id         Int      @id @default(autoincrement())
+  acao       String   // Ex: 'criar_igreja', 'remover_usuario', 'login'
+  usuarioId  Int?     // ID do usuário que fez a ação (pode ser null para ações públicas)
+  superuser  Boolean  @default(false)
+  detalhes   String?  // JSON ou texto com detalhes da ação
+  dataHora   DateTime @default(now())
+}
