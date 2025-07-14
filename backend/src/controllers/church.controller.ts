@@ -18,6 +18,17 @@ const churchController = {
     }
   },
 
+    async atualizarLocalizacao(req: Request, res: Response) {
+    const { latitude, longitude } = req.body;
+    const { id } = req.params;
+    try {
+      const igreja = await churchService.updateChurch(Number(id), { latitude, longitude });
+      res.json(igreja);
+    } catch (error: any) {
+      res.status(400).json({ error: error.message });
+    }
+  },
+
   async list(req: Request, res: Response) {
     try {
       const igrejas = await churchService.listChurches();
@@ -67,5 +78,7 @@ const churchController = {
     }
   }
 };
+
+
 
 export default churchController;

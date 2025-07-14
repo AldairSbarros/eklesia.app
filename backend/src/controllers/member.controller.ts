@@ -49,6 +49,20 @@ export const update = async (req: Request, res: Response) => {
   }
 };
 
+// Atualizar geolocalização do membro
+export const atualizarLocalizacao = async (req: Request, res: Response) => {
+  try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+    const { id } = req.params;
+    const { latitude, longitude } = req.body;
+    const member = await memberService.updateMember(schema, Number(id), { latitude, longitude });
+    res.json(member);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
 // DELETE
 export const remove = async (req: Request, res: Response) => {
   try {

@@ -35,6 +35,20 @@ export const update = async (req: Request, res: Response) => {
   }
 };
 
+// Atualizar geolocalização da congregação
+export const atualizarLocalizacao = async (req: Request, res: Response) => {
+  try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+    const { id } = req.params;
+    const { latitude, longitude } = req.body;
+    const congregacao = await congregacaoService.updateCongregacao(schema, Number(id), { latitude, longitude });
+    res.json(congregacao);
+  } catch (error: any) {
+    res.status(500).json({ error: 'Erro ao atualizar localização da congregação' });
+  }
+};
+
 // Deletar congregação
 export const remove = async (req: Request, res: Response) => {
   try {

@@ -11,3 +11,23 @@ export function getPrismaForSchema(schema: string) {
     },
   });
 }
+
+export async function buscarAniversariantesPorSchema(schema: string) {
+  const prismaSchema = getPrismaForSchema(schema);
+  const hoje = new Date();
+  const dia = hoje.getDate();
+  const mes = hoje.getMonth() + 1;
+
+  const aniversariantes = await prismaSchema.member.findMany({
+    where: {
+      dataNascimento: { not: null },
+    },
+  });
+
+  // Filtra no JS
+  return aniversariantes.filter((m) => {
+    if (!m.dataNascimento) return false;
+    const data = new Date(m.dataNascimento);
+    return data.getDate() === dia && data.getMonth() + 1 === mes;
+  });
+}

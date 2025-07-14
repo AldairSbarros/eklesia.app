@@ -35,6 +35,9 @@ model Church {
   vendas            Venda[]
   status            String          @default("ativa") // <-- status: ativa/inativa
   createdAt         DateTime        @default(now())
+  latitude  Float?  // <-- novo campo
+  longitude Float?  // <-- novo campo
+  liveStreams       LiveStream[]    // Relation to LiveStream
 }
 
 // ==================== SCHEMA POR CHURCH ====================
@@ -70,6 +73,8 @@ model Congregacao {
   ministerios       Ministerio[]
   escolaLideres     EscolaLideresTurma[]
   encontros         Encontro[]
+  latitude  Float?  // <-- novo campo
+  longitude Float?  // <-- novo campo
 }
 
 // Ministério (Homens, Mulheres, Jovens, Teens, Crianças, etc)
@@ -146,10 +151,21 @@ model Member {
   escolaLideresTurma EscolaLideresTurma[] @relation("TurmaAlunos")
   encontros          Encontro[]       @relation("EncontroParticipantes")
   lideraMinisterios  Ministerio[]     @relation("MinisterioLider")
-  celulaId           Int?             // <-- Adicione esta linha
-  celula             Celula?          @relation(fields: [celulaId], references: [id]) // <-- E esta
+  celulaId           Int?
+  celula             Celula?          @relation(fields: [celulaId], references: [id])
   dataNascimento     DateTime?
-  whatsapp           String? 
+  whatsapp           String?
+  latitude  Float?  // <-- novo campo
+  longitude Float?  // <-- novo campo
+
+  // Discipulado (auto-relação)
+  discipuladorId     Int?             // ID do discipulador deste membro
+  discipulador       Member?          @relation("Discipulado", fields: [discipuladorId], references: [id])
+  discipulandos      Member[]         @relation("Discipulado")
+
+  // Relações com Encontros
+  encontrosComoDiscipulador Encontros[] @relation("EncontroDiscipulador")
+  encontrosComoDiscipulando  Encontros[] @relation("EncontroDiscipulando")
 }
 
 // Endereço do Membro
@@ -163,6 +179,8 @@ model EnderecoMembro {
   cep       String
   memberId  Int     @unique
   member    Member  @relation(fields: [memberId], references: [id])
+  latitude  Float?  // <-- novo campo
+  longitude Float?  // <-- novo campo
 }
 
 // Usuário pertence à Congregação
@@ -265,9 +283,9 @@ model Celula {
   reunioes      ReuniaoCelula[]
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  latitude  Float?  // <-- novo campo
+  longitude Float?  // <-- novo campo
 }
-
-
 
 model ReuniaoCelula {
   id         Int               @id @default(autoincrement())
@@ -277,6 +295,8 @@ model ReuniaoCelula {
   Celula     Celula            @relation(fields: [celulaId], references: [id])
   presencas  PresencaCelula[]
   visitantes VisitanteCelula[]
+  latitude  Float?  // <-- novo campo
+  longitude Float?  // <-- novo campo
 }
 
 model PresencaCelula {
@@ -381,6 +401,8 @@ model EnderecoIgreja {
   estado  String
   cep     String
   igrejas Church[]
+  latitude  Float?  // <-- novo campo
+  longitude Float?  // <-- novo campo
 }
 
 model Venda {
@@ -443,4 +465,28 @@ model Auditoria {
   superuser  Boolean  @default(false)
   detalhes   String?  // JSON ou texto com detalhes da ação
   dataHora   DateTime @default(now())
+}
+
+model Encontros {
+  id             Int      @id @default(autoincrement())
+  discipuladorId Int
+  discipulandoId Int
+  data           DateTime
+  assunto        String?
+  observacoes    String?
+  criadoEm       DateTime @default(now())
+
+  discipulador   Member   @relation("EncontroDiscipulador", fields: [discipuladorId], references: [id])
+  discipulando   Member   @relation("EncontroDiscipulando", fields: [discipulandoId], references: [id])
+}
+
+model LiveStream {
+  id         Int      @id @default(autoincrement())
+  churchId   Int
+  titulo     String
+  descricao  String?
+  url        String   // link do vídeo/livestream
+  agendadaEm DateTime?
+  criadaEm   DateTime @default(now())
+  church     Church   @relation(fields: [churchId], references: [id])
 }

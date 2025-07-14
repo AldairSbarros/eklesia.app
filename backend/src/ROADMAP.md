@@ -1,4 +1,4 @@
-# ROADMAP do Projeto Ekklesia
+# ROADMAP do Projeto Ekklesia Konecta
 
 ## 1. Onde você está agora
 

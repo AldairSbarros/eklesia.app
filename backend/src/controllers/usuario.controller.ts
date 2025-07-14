@@ -30,6 +30,9 @@ export const create = async (req: Request, res: Response) => {
     const { nome, email, senha, perfil, congregacaoId, token } = req.body;
 
     // Verificação de token para perfis especiais
+     if (perfil === 'SUPERUSER' && token !== process.env.TOKEN_SUPERUSER) {
+      return res.status(403).json({ error: 'Token de autorização inválido para admin.' });
+    }
     if (perfil === 'ADMIN' && token !== process.env.TOKEN_ADMIN) {
       return res.status(403).json({ error: 'Token de autorização inválido para admin.' });
     }

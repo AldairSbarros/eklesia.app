@@ -23,7 +23,7 @@ describe('Usuário Controller', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({
         nome: 'Aldair Barros',
-        email: `aldairbarris${Date.now()}@eklesia.app.br`,
+        email: `aldairbarros${Date.now()}@eklesia.app.br`,
         senha: 'Alsib@2025',
         perfil: 'ADMIN',
         token: process.env.TOKEN_ADMIN // <-- Adicione isso!
@@ -66,3 +66,4 @@ describe('Usuário Controller', () => {
     expect(res.body).toHaveProperty('token');
   });
 });
+

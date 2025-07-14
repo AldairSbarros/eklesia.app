@@ -13,6 +13,20 @@ export const create = async (req: Request, res: Response) => {
   }
 };
 
+export const atualizarLocalizacao = async (req: Request, res: Response) => {
+  try {
+    const schema = req.headers['schema'] as string;
+    if (!schema) return res.status(400).json({ error: 'Schema não informado no header.' });
+    const { id } = req.params;
+    const { latitude, longitude } = req.body;
+    const celula = await celulaService.updateCelula(schema, Number(id), { latitude, longitude });
+    res.json(celula);
+  } catch (error: any) {
+    res.status(400).json({ error: error.message });
+  }
+};
+
+
 // Listar células
 export const list = async (req: Request, res: Response) => {
   try {

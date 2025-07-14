@@ -1,5 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import * as celulaController from '../controllers/celula.controller';
+import { autenticarJWT } from '../middleware/autenticarJWT';
+import { autorizarRoles } from '../middleware/autorizarRoles';
 
 const router = Router();
 
@@ -18,6 +20,7 @@ router.get('/', asyncHandler(celulaController.list));
 router.get('/:id', asyncHandler(celulaController.get));
 router.put('/:id', asyncHandler(celulaController.update));
 router.delete('/:id', asyncHandler(celulaController.remove));
+router.put('/:id/localizacao', autenticarJWT, autorizarRoles(['ADMIN', 'LIDER']), asyncHandler(celulaController.atualizarLocalizacao));
 
 // Membros da célula
 router.post('/:id/membros', asyncHandler(celulaController.addMembro));

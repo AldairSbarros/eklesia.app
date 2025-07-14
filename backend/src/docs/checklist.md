@@ -35,9 +35,9 @@
 - [ ] Testes unitários
 
 ## 4. Módulo de Discipulado
-- [ ] Cadastro de discipuladores e discipulandos
-- [ ] Registro de encontros e acompanhamento
-- [ ] Relatórios de discipulado
+- [x] Cadastro de discipuladores e discipulandos
+- [x] Registro de encontros e acompanhamento
+- [x] Relatórios de discipulado
 
 ## 5. Módulo de Tesouraria/Financeiro
 - [x] Cadastro de entradas e saídas financeiras
@@ -72,7 +72,7 @@
 ## 10. Infraestrutura e Deploy
 - [x] Configuração de variáveis de ambiente
 - [ ] Scripts de build e deploy automatizado
-- [ ] Backup automático dos bancos de dados
+- [x] Backup automático dos bancos de dados
 - [ ] Monitoramento e alertas
 
 ## 11. Documentação
@@ -91,6 +91,19 @@
 - [ ] Adicionar logs de auditoria para ações administrativas
 - [ ] Dashboard de métricas e uso do sistema
 - [ ] Multi-idioma
+
+## 14. Módulo de Transmissões ao Vivo (Lives/Web Rádio)
+- [x] Cadastro de transmissões ao vivo (lives) por igreja
+- [x] Cadastro de link de rádio web por igreja
+- [x] Listagem de transmissões por igreja
+- [x] Endpoints REST para criar e listar lives
+- [x] Integração multi-schema (cada igreja pode ter suas próprias transmissões)
+- [ ] Testes unitários e de integração para o módulo de lives
+- [ ] Documentação Swagger dos endpoints de lives
+- [ ] Exemplo de embed/player para frontend
+
+---
+
 
 ---
 

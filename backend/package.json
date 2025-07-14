@@ -1,11 +1,12 @@
 {
-  "name": "backend",
+  "name": "eklesiakonecta",
   "scripts": {
     "build": "tsc",
     "start": "ts-node src/server.ts",
     "dev": "ts-node-dev src/server.ts",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "keywords": [],
   "author": "",
@@ -25,7 +26,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.1",
-    "node-cron": "^4.1.1",
+    "node-cron": "^4.2.1",
     "nodemailer": "^7.0.3",
     "pdf-parse": "^1.1.1",
     "pg": "^8.16.3",

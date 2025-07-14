@@ -12,7 +12,6 @@ router.post(
   "/",
   autenticarJWT,
   autorizarRoles(["ADMIN"]),
-  autenticarJWT,
   validarCadastroIgreja,
   handleValidation,
   churchController.create
@@ -28,6 +27,14 @@ router.delete(
   autenticarJWT,
   autorizarRoles(["ADMIN"]),
   churchController.remove
+);
+
+// Atualizar localização da igreja (padrão REST: /:id/localizacao)
+router.put(
+  "/:id/localizacao",
+  autenticarJWT,
+  autorizarRoles(["ADMIN"]),
+  churchController.atualizarLocalizacao
 );
 
 // Rotas protegidas apenas por autenticação

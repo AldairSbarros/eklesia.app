@@ -1,10 +1,8 @@
 /// <reference path="./@types/express/index.d.ts" />
+import express, { Request, Response } from 'express';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
-
-import express, { Request, Response } from 'express';
 import cors from 'cors';
-import path from 'path';
 import swaggerUi from 'swagger-ui-express';
 
 // Importação dos módulos de rotas
@@ -20,7 +18,6 @@ import receitaRoutes from './routes/receita.routes';
 import investimentosRoutes from './routes/investimentos.routes';
 import mensagemCelulaRoutes from './routes/mensagemCelula.routes';
 import pastorRoutes from './routes/pastor.routes';
-
 import ministerioLocalRoutes from './routes/ministerioLocal.routes';
 import escolaLideresTurmaRoutes from './routes/escolaLideresTurma.routes';
 import escolaLideresLicaoRoutes from './routes/escolaLideresLicao.routes';
@@ -37,17 +34,21 @@ import tokenRecuperacaoSenhaRoutes from './routes/tokenRecuperacaoSenha.routes';
 import arquivoRoutes from './routes/arquivo.routes';
 import logRoutes from './routes/log.routes';
 import faturaRoutes from './routes/fatura.routes';
-
-
 import sermaoRoutes from './routes/sermao.routes';
 import passwordRoutes from './routes/password.routes';
 import financeiroRoutes from './routes/financeiro.routes';
 import devUserRoutes from './routes/devuser.routes';
-// Remova o import do controller de configEmail
+import relatoriosRoutes from './routes/arquivo.routes';
+import liveRoutes from './routes/live.routes';
+import * as usuarioController from './controllers/usuario.controller';
+import asyncHandler from 'express-async-handler';
+import discipuladoRoutes from './routes/discipulado.routes';
+import './services/aniversariantes.service';
 
-
+// Inicialização do app
 const app = express();
 
+// Middlewares globais
 app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 app.use(helmet());
 app.use(cors());
@@ -57,7 +58,10 @@ app.use(express.json());
 const swaggerDocument = require('./docs/swagger.json');
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-// Rotas de entidades principais
+// Rotas de transmissões ao vivo (lives)
+app.use('/api/lives', liveRoutes);
+
+// Rotas principais de entidades
 app.use('/api/igrejas', churchRoutes);
 app.use('/api/congregacoes', congregacaoRoutes);
 app.use('/api/membros', memberRoutes);
@@ -71,11 +75,12 @@ app.use('/api/presencas-celula', presencaCelulaRoutes);
 app.use('/api/visitantes-celula', visitanteCelulaRoutes);
 app.use('/api/mensagens-celula', mensagemCelulaRoutes);
 
-// Rotas de ministérios e escola de líderes
+// Rotas de discipulado (CRUD completo)
+app.use('/api/discipulado', discipuladoRoutes);
 
+// Rotas de ministérios e escola de líderes
 app.use('/api/ministerios-locais', ministerioLocalRoutes);
 app.use('/api/escola-lideres-turmas', escolaLideresTurmaRoutes);
-
 app.use('/api/escola-lideres-licoes', escolaLideresLicaoRoutes);
 
 // Rotas de finanças
@@ -86,37 +91,49 @@ app.use('/api/investimentos', investimentosRoutes);
 app.use('/api/financeiro', financeiroRoutes);
 app.use('/api/faturas', faturaRoutes);
 
-
-// Outras rotas
+// Outras rotas de funcionalidades
 app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/auth', authRoutes);
 app.use('/api/notificacoes', notificacaoRoutes);
 app.use('/api/permissoes', permissaoRoutes);
 app.use('/api/usuario-permissoes', usuarioPermissaoRoutes);
-
 app.use('/api/tokens-recuperacao-senha', tokenRecuperacaoSenhaRoutes);
 app.use('/api/arquivos', arquivoRoutes);
 app.use('/api/logs', logRoutes);
 app.use('/api/sermoes', sermaoRoutes);
 app.use('/api/enderecos-membro', enderecoMembroRoutes);
-
 app.use('/api/encontros', encontroRoutes);
-
-// Rotas de senha
 app.use('/api/password', passwordRoutes);
+app.use('/api/relatorios', relatoriosRoutes);
+app.use('/api/auth', authRoutes); // Inclui /api/auth/login, /api/auth/logout, etc
 
-// Rota Super Admin
-app.use('/api', devUserRoutes); // ou o prefixo que você usa para suas
+// Rota alternativa de login de usuário
+app.post('/api/usuarios/login', asyncHandler(usuarioController.login));
+
+// Rotas de super admin/dev
+app.use('/api', devUserRoutes);
 
 // Rotas para arquivos estáticos
 app.use('/uploads', express.static('uploads'));
-app.use('/pdfs', express.static(path.resolve(__dirname, '../public/pdfs')));
 
 // Rota base de status
 app.get('/', (req: Request, res: Response) => {
-  res.send('API a179 rodando');
+  res.send('API EklesiaApp rodando');
 });
 
-// Corrija para usar a rota de configuração de e-mail, se existir
-// Rota de configuração de e-mail removida porque o módulo não existe
+// Cron para backup agendado
+const cron = require('node-cron');
+const { exec } = require('child_process');
+const path = require('path');
+
+cron.schedule('0 2 * * *', () => {
+  const scriptPath = path.join(__dirname, '..', '..', 'scripts', 'backupDatabase.js');
+  exec(`node "${scriptPath}"`, (error: import('child_process').ExecException | null, stdout: string, stderr: string) => {
+    if (error) {
+      console.error('Erro no backup agendado:', error);
+    } else {
+      console.log('Backup agendado executado:', stdout);
+    }
+  });
+});
+
 export default app;
